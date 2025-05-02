@@ -14,6 +14,7 @@ class Board:
     """
 
     def __init__(self):
+        # Using defaultdict to automatically initialize empty lists for positions
         self._grid: dict[Position, list[Bug]] = defaultdict(list)
 
     def place_bug(self, bug: Bug, position: Position) -> None:
