@@ -9,6 +9,7 @@ from hive.models.position import Position
 # A set of symbolic names bound to unique, constant values.
 class BugType(Enum):
     """Enumeration of all bug types in the Hive base game."""
+
     QUEEN_BEE = "QueenBee"
     ANT = "Ant"
     BEETLE = "Beetle"
@@ -25,6 +26,7 @@ class Bug:
 
     Each bug knows its type, owner, position, and stack height.
     """
+
     bug_type: BugType
     owner: Player
     position: Position

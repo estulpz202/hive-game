@@ -10,7 +10,7 @@ class Position:
     q: int  # axial coordinate q
     r: int  # axial coordinate r
 
-    def neighbors(self):
+    def neighbors(self) -> list["Position"]:
         """
         Calculate and return the 6 adjacent positions (neighbors) on the hex grid.
 
