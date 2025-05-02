@@ -23,8 +23,11 @@ Hive is an abstract strategy game for two players. Each player controls a set of
 curl -sSL https://install.python-poetry.org | python3 -
 
 # Clone and enter the repo
-git clone https://github.com/YOUR_USERNAME/hive-game.git
+git clone https://github.com/estulpz202/hive-game.git
 cd hive-game
+
+# Install dependencies
+make install
 ```
 
 ### Set Up Frontend

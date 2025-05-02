@@ -43,5 +43,6 @@ lint.ignore = [
   "D107",   # don't require docstrings on __init__
   "D203",   # conflicting docstring formatting rules
   "D212",   # ignore first-line summary rule
-  "D413",  # allow no blank line after "Returns" section
+  "D413",   # allow no blank line after "Returns" section
+  "D100",   # allow no docstring in public module
 ]
