@@ -16,7 +16,32 @@ packages = [{include = "hive", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
+ruff = "^0.11.8"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+lint.select = [
+  "F",      # pyflakes (default)
+  "E", "W", # pycodestyle (default)
+  "I",      # isort (default)
+  "N",      # pep8-naming
+  "D",      # pydocstyle (docstrings)
+  "B",      # flake8-bugbear (common bugs / bad practices)
+  "C4",     # flake8-comprehensions
+  "ERA",    # eradicate (remove commented-out code)
+  "PL",     # pylint-style rules
+  "UP",     # pyupgrade (Python 3 idioms)
+]
+
+lint.ignore = [
+  "D107",   # don't require docstrings on __init__
+  "D203",   # conflicting docstring formatting rules
+  "D212",   # ignore first-line summary rule
+  "D413",  # allow no blank line after "Returns" section
+]
