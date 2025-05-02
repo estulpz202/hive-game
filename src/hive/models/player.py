@@ -36,10 +36,5 @@ class Player:
         return False
 
     def add_to_placed(self, bug) -> None:
-        """
-        Adds a bug to the placed list.
-
-        Args:
-            bug: The bug to be added.
-        """
+        """Adds a bug to the placed list."""
         self.placed.append(bug)

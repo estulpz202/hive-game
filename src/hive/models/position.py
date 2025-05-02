@@ -11,11 +11,6 @@ class Position:
     r: int  # axial coordinate r
 
     def neighbors(self) -> list["Position"]:
-        """
-        Calculate and return the 6 adjacent positions (neighbors) on the hex grid.
-
-        Returns:
-            list[Position]: A list of 6 Position objects representing the neighboring hexes.
-        """
+        """Calculate and return the 6 adjacent positions (neighbors) on the hex grid."""
         directions = [(1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1)]
         return [Position(self.q + dq, self.r + dr) for dq, dr in directions]
