@@ -45,4 +45,5 @@ lint.ignore = [
   "D212",   # ignore first-line summary rule
   "D413",   # allow no blank line after "Returns" section
   "D100",   # allow no docstring in public module
+  "D401",   # allows docstring to not be in imperative mood
 ]
