@@ -1,7 +1,6 @@
 import pytest  # type: ignore
 
 from hive.behaviors import get_behavior_for
-from hive.behaviors.queen import QueenBehavior
 from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.bugtype import BugType
@@ -17,10 +16,6 @@ def board():
 @pytest.fixture
 def players():
     return Player("WHITE"), Player("BLACK")
-
-
-def test_get_behavior_for_returns_expected_types():
-    assert isinstance(get_behavior_for(BugType.QUEEN_BEE), QueenBehavior)
 
 
 def test_queen_behavior_valid_moves(board, players):

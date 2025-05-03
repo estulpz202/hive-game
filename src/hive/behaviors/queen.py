@@ -34,7 +34,7 @@ class QueenBehavior(BugBehavior):
                 not board.dest_is_connected(bug.position, dest) or
                 not board.can_slide_to(bug.position, dest)):
                 continue
-            
+
             valid.append(dest)
 
         return valid

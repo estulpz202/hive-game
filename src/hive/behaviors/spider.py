@@ -3,6 +3,7 @@ from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.position import Position
 
+SPIDER_SLIDE = 3  # Number of slides the spider must make
 
 class SpiderBehavior(BugBehavior):
     """Movement rules for the Spider: must slide exactly three spaces without backtracking."""
@@ -30,10 +31,10 @@ class SpiderBehavior(BugBehavior):
         # Perform recursive DFS to explore all connected valid positions
         def dfs(cur_pos: Position, path: list[Position]):
             # Check sliding exactly 3 steps (depth limit)
-            if len(path) == 3:
+            if len(path) == SPIDER_SLIDE:
                 valid.add(cur_pos)
                 return
-            
+
             # Check adjacent moves
             for nbor in cur_pos.neighbors():
                 # Check move not backtracking, unoccupied, OHR for dest, and FOM

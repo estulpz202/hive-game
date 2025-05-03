@@ -17,5 +17,5 @@ class Bug:
 
     bug_type: BugType
     owner: Player
-    position: Position
+    position: Position | None = None # Position is none before its placed
     on_top: int = 0  # 0 = ground level, >0 = height in stack
