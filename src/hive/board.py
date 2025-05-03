@@ -98,6 +98,21 @@ class Board:
 
         # Checks if all neighboring bugs belong to the same player
         return all(b.owner == player for b in neighbor_bugs if b is not None)
+    
+    def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
+        """Checks if the destination will remain connected to the hive after moving."""
+        # If from_pos stays occupied, safe to just check neighbors of to_pos
+        if len(self.get_stack(from_pos)) > 1:
+            return any(self.is_occupied(nbor) for nbor in to_pos.neighbors())
+
+        # Else: skip from_pos when checking neighbors
+        for nbor in to_pos.neighbors():
+            if nbor == from_pos:
+                continue
+            if self.is_occupied(nbor):
+                return True
+
+        return False
 
     def is_one_hive_move(self, from_pos: Position, to_pos: Position = None) -> bool:
         """
@@ -113,14 +128,13 @@ class Board:
         # If nothing to remove, hive is unchanged
         if not self.is_occupied(from_pos):
             return True
+        
+        # If to_pos provided and has no occupied neighbors, moved bug will be unconnected
+        if to_pos and not self.dest_is_connected(from_pos, to_pos):
+            return False
 
         # Temporarily remove top bug
         removed_bug = self.remove_top_bug(from_pos)
-
-        # If to_pos provided and has no occupied neighbors, moved bug will be unconnected
-        if to_pos and not any(self.is_occupied(nbor) for nbor in to_pos.neighbors()):
-            self._grid[from_pos].append(removed_bug)
-            return False
 
         # If from_pos still occupied, the hive remains connected
         if self.is_occupied(from_pos):
