@@ -6,7 +6,7 @@ This project is a full-stack implementation of the game **Hive**. It features a 
 
 - **Backend**: Python with Poetry and FastAPI (planned)
 - **Frontend**: React (TypeScript, planned)
-- **Testing**: test suite with `pytest`
+- **Testing**: Test suite with `pytest`
 - **Design**: Clean, extensible object-oriented architecture with well-structured, readable code
 - **Pattern**: MVC-style separation of logic, API, and view
 
