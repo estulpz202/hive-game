@@ -12,7 +12,7 @@ This project is a full-stack implementation of the game **Hive**. It features a 
 
 ## 🎮 Game Rules
 
-Hive is an abstract strategy game for two players. Each player controls a set of bugs, Queen Bee, Beetles, Spiders, Ants, and Grasshoppers, and must surround the opponent’s Queen to win. This implementation currently includes the base game (expansion bugs like Ladybug and Mosquito planned).
+Hive is an abstract strategy game for two players. Each player controls a set of bugs; Queen Bee, Beetles, Spiders, Ants, and Grasshoppers. They must surround the opponent’s Queen to win. This implementation currently includes the base game (expansion bugs like Ladybug, Mosquito, and Pill bug planned).
 
 ## 🛠 Getting Started
 

@@ -45,3 +45,8 @@ def test_spider_behavior_valid_moves(board, players):
 
     assert len(moves) == len(expected_moves)
     assert set(moves) == expected_moves
+
+    # Perform the move
+    assert spider.position == west
+    assert board.move_bug(spider, right_ne)
+    assert spider.position == right_ne

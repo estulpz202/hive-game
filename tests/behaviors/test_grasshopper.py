@@ -44,3 +44,8 @@ def test_grassh_behavior_valid_moves(board, players):
 
     assert len(moves) == len(expected_moves)
     assert set(moves) == expected_moves
+
+    # Perform the move
+    assert grassh.position == west
+    assert board.move_bug(grassh, eee)
+    assert grassh.position == eee

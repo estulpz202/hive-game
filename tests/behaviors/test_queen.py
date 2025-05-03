@@ -38,6 +38,11 @@ def test_queen_behavior_valid_moves(board, players):
     # Queen should not be able to move to p2 (occupied)
     assert p2 not in moves
 
+    # Perform the move
+    assert queen.position == p1
+    assert board.move_bug(queen, p3)
+    assert queen.position == p3
+
 
 def test_queen_behavior_blocked_slide(board, players):
     """Queen should not be able to slide into a position if tightly blocked (FOM)."""

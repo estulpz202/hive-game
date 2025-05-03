@@ -5,7 +5,7 @@ from hive.models.bug import Bug
 from hive.models.player import Player
 from hive.models.position import Position
 
-MAX_SLIDE_BLOCKERS = 1  # Max number of blocking neighbors to allow sliding
+NUM_BLOCKERS_FOM = 2  # The number of blocking neighbors to restrict sliding
 
 class Board:
     """
@@ -25,6 +25,12 @@ class Board:
         if stack:
             return stack.pop()
         return None
+
+    def _drop_bug(self, bug: Bug, position: Position) -> None:
+        """Unconditionally places a bug on the stack at the given position."""
+        bug.position = position
+        bug.on_top = len(self._grid[position])
+        self._grid[position].append(bug)
 
     def get_stack(self, position: Position) -> list[Bug]:
         """Returns the bug stack at a given position."""
@@ -107,9 +113,7 @@ class Board:
         if not self.can_place_bug(bug.owner, position):
             return False
 
-        bug.position = position
-        bug.on_top = len(self._grid[position])
-        self._grid[position].append(bug)
+        self._drop_bug(bug, position)
         return True
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
@@ -182,7 +186,7 @@ class Board:
 
     def can_slide_to(self, from_pos: Position, to_pos: Position) -> bool:
         """
-        Determines if a bug can slide from one position to another.
+        Determines if a bug can slide between two adjacent positions.
 
         Conditions: Dest must be unoccupied, both positions must be adjacent, and
         Freedom of Movement (need one free shared neighbor to allow sliding, no tight gap).
@@ -206,7 +210,7 @@ class Board:
         blocked_sides = sum(1 for nbor in shared_neighbors if self.is_occupied(nbor))
 
         # Bug can slide if fewer than 2 adjacent tiles block the gap
-        return blocked_sides <= MAX_SLIDE_BLOCKERS
+        return blocked_sides < NUM_BLOCKERS_FOM
 
     def can_move_bug(self, bug: Bug, to_pos: Position) -> bool:
         """
@@ -258,5 +262,5 @@ class Board:
             return False
 
         self.remove_top_bug(bug.position)
-        self.place_bug(bug, to_pos)
+        self._drop_bug(bug, to_pos)
         return True

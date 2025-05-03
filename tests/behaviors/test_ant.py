@@ -52,6 +52,11 @@ def test_ant_behavior_can_move_around_hive(board, players):
     assert len(moves) == len(expected_moves)
     assert set(moves) == expected_moves
 
+    # Perform the move
+    assert ant.position == west
+    assert board.move_bug(ant, right_ne)
+    assert ant.position == right_ne
+
 
 def test_ant_behavior_respects_FOM(board, players):
     """Queen should not be able to slide into a position if tightly blocked (FOM)."""
