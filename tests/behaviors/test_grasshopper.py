@@ -18,30 +18,29 @@ def players():
     return Player("WHITE"), Player("BLACK")
 
 
-def test_spider_behavior_valid_moves(board, players):
+def test_grassh_behavior_valid_moves(board, players):
     white, black = players
     center = Position(0, 0)
-    east = Position(1, 0)
     west = Position(-1, 0)
+    east = Position(1, 0)
+    ee = Position(2, 0)
 
-    right_se = Position(1, 1)
-    right_ne = Position(2, -1)
+    eee = Position(3, 0)
 
-    # spider (w) - q1 (w) - q2 (b)
+    # grassh (w) - q1 (w) - q2 (b) - q3 (b)
     q1 = Bug(BugType.QUEEN_BEE, white)
     q2 = Bug(BugType.QUEEN_BEE, black)
-    spider = Bug(BugType.SPIDER, white)
+    q3 = Bug(BugType.QUEEN_BEE, black)
+    grassh = Bug(BugType.GRASSHOPPER, white)
     assert board.place_bug(q1, center)
     assert board.place_bug(q2, east)
-    assert board.place_bug(spider, west)
+    assert board.place_bug(q3, ee)
+    assert board.place_bug(grassh, west)
 
-    behavior = get_behavior_for(BugType.SPIDER)
-    moves = behavior.get_valid_moves(spider, board)
-
-    # Spider should be able to move 3 spaces away following rules
-    behavior = get_behavior_for(BugType.SPIDER)
-    moves = behavior.get_valid_moves(spider, board)
-    expected_moves = {right_se, right_ne}
+    # Grassh should be able to jump over line of queens
+    behavior = get_behavior_for(BugType.GRASSHOPPER)
+    moves = behavior.get_valid_moves(grassh, board)
+    expected_moves = {eee}
 
     assert len(moves) == len(expected_moves)
     assert set(moves) == expected_moves
