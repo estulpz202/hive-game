@@ -98,7 +98,7 @@ class Board:
 
         # Checks if all neighboring bugs belong to the same player
         return all(b.owner == player for b in neighbor_bugs if b is not None)
-    
+
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
         """Checks if the destination will remain connected to the hive after moving."""
         # If from_pos stays occupied, safe to just check neighbors of to_pos
@@ -128,7 +128,7 @@ class Board:
         # If nothing to remove, hive is unchanged
         if not self.is_occupied(from_pos):
             return True
-        
+
         # If to_pos provided and has no occupied neighbors, moved bug will be unconnected
         if to_pos and not self.dest_is_connected(from_pos, to_pos):
             return False
@@ -166,7 +166,7 @@ class Board:
 
         # Check if all remaining positions were visited
         return visited == remaining
-    
+
     def can_slide_to(self, from_pos: Position, to_pos: Position) -> bool:
         """
         Determines if a bug can slide from one position to another.
