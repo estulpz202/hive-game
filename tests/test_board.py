@@ -202,4 +202,3 @@ def test_can_move_bug_and_move_bug(board, players):
 
     assert board.get_top_bug(p3) == white_bug
     assert not board.is_occupied(p2)
-
