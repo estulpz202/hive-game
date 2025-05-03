@@ -1,4 +1,4 @@
-from hive.models.bug import BugType
+from hive.models.bugtype import BugType
 
 
 class Player:

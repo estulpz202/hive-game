@@ -6,7 +6,7 @@ from hive.behaviors.beetle import BeetleBehavior
 from hive.behaviors.grasshopper import GrasshopperBehavior
 from hive.behaviors.queen import QueenBehavior
 from hive.behaviors.spider import SpiderBehavior
-from hive.models.bug import BugType
+from hive.models.bugtype import BugType
 
 _behavior_map: dict[BugType, BugBehavior] = {
     BugType.QUEEN_BEE: QueenBehavior(),

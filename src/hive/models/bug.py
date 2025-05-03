@@ -1,20 +1,8 @@
 from dataclasses import dataclass
-from enum import Enum
 
+from hive.models.bugtype import BugType
 from hive.models.player import Player
 from hive.models.position import Position
-
-
-# Enum is a class that allows the creation of enumerations.
-# A set of symbolic names bound to unique, constant values.
-class BugType(Enum):
-    """Enumeration of all bug types in the Hive base game."""
-
-    QUEEN_BEE = "QueenBee"
-    ANT = "Ant"
-    BEETLE = "Beetle"
-    SPIDER = "Spider"
-    GRASSHOPPER = "Grasshopper"
 
 
 # @dataclass is used to automatically generate special methods.
