@@ -19,12 +19,6 @@ class Board:
         # Using defaultdict to automatically initialize empty lists for positions
         self._grid: dict[Position, list[Bug]] = defaultdict(list)
 
-    def place_bug(self, bug: Bug, position: Position) -> None:
-        """Places a bug on the board at the given position."""
-        bug.position = position
-        bug.on_top = len(self._grid[position])
-        self._grid[position].append(bug)
-
     def remove_top_bug(self, position: Position) -> Bug | None:
         """Removes and returns the top bug at a given position."""
         stack = self._grid.get(position)
@@ -98,6 +92,25 @@ class Board:
 
         # Checks if all neighboring bugs belong to the same player
         return all(b.owner == player for b in neighbor_bugs if b is not None)
+
+    def place_bug(self, bug: Bug, position: Position) -> bool:
+        """
+        Attempts to place a bug at a given position on the board.
+
+        Args:
+            bug (Bug): The bug to place.
+            position (Position): The target position to place the bug.
+
+        Returns:
+            bool: True if the bug was successfully placed, False otherwise.
+        """
+        if not self.can_place_bug(bug.owner, position):
+            return False
+
+        bug.position = position
+        bug.on_top = len(self._grid[position])
+        self._grid[position].append(bug)
+        return True
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
         """Checks if the destination will remain connected to the hive after moving."""
