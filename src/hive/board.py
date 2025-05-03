@@ -152,6 +152,34 @@ class Board:
 
         # Check if all remaining positions were visited
         return visited == remaining
+    
+    def can_slide_to(self, from_pos: Position, to_pos: Position) -> bool:
+        """
+        Determines if a bug can slide from one position to another.
+
+        Conditions: Dest must be unoccupied, both positions must be adjacent, and
+        Freedom of Movement (need one free shared neighbor to allow sliding, no tight gap).
+
+        Args:
+            from_pos (Position): The bug's current position.
+            to_pos (Position): The position the bug wants to slide into.
+
+        Returns:
+            bool: True if the bug can legally slide to the destination, False otherwise.
+        """
+        if self.is_occupied(to_pos):
+            return False
+
+        if to_pos not in from_pos.neighbors():
+            return False
+
+        # Get the positions that are neighbors of both from and to
+        shared_neighbors = set(from_pos.neighbors()) & set(to_pos.neighbors())
+        # Count how many of those are occupied
+        blocked_sides = sum(1 for nbor in shared_neighbors if self.is_occupied(nbor))
+
+        # Bug can slide if fewer than 2 adjacent tiles block the gap
+        return blocked_sides <= MAX_SLIDE_BLOCKERS
 
     def can_move_bug(self, bug: Bug, to_pos: Position) -> bool:
         """
