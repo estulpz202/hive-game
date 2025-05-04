@@ -13,6 +13,7 @@ interface AppState extends GameState {
   validPlacements: Position[];
   validMovesForSelecPos: Position[];
   errorMessage: string | null;
+  zoomLevel: number;
 }
 
 class App extends React.Component<Props, AppState> {
@@ -33,6 +34,7 @@ class App extends React.Component<Props, AppState> {
       validPlacements: [],
       validMovesForSelecPos: [],
       errorMessage: null,
+      zoomLevel: 1,
     };
   }
 
@@ -171,6 +173,18 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  handleZoomIn = () => {
+    this.setState((prevState) => ({
+      zoomLevel: Math.min(prevState.zoomLevel + 0.1, 2), // Max zoom level 2x
+    }));
+  };
+
+  handleZoomOut = () => {
+    this.setState((prevState) => ({
+      zoomLevel: Math.max(prevState.zoomLevel - 0.1, 0.5), // Min zoom level 0.5x
+    }));
+  };
+
   renderError(): React.ReactNode {
     const { errorMessage } = this.state;
     if (!errorMessage) return null;
@@ -210,6 +224,7 @@ class App extends React.Component<Props, AppState> {
       can_pass,
       winner,
       visible_positions,
+      zoomLevel,
     } = this.state;
 
     return (
@@ -227,6 +242,8 @@ class App extends React.Component<Props, AppState> {
         <div className="controls">
           <button onClick={this.newGame}>New Game</button>
           {can_pass && <button onClick={this.handlePass}>Pass</button>}
+          <button onClick={this.handleZoomIn}>Zoom In</button>
+          <button onClick={this.handleZoomOut}>Zoom Out</button>
         </div>
 
         {this.renderError()}
@@ -251,6 +268,7 @@ class App extends React.Component<Props, AppState> {
             validPlacements={validPlacements}
             validMovesForSelecPos={validMovesForSelecPos}
             selectedBoardPos={selectedBoardPos}
+            zoomLevel={zoomLevel}
           />
         </div>
 

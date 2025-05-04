@@ -10,6 +10,7 @@ interface CellProps {
   isValidPlacement: boolean;
   isValidMove: boolean;
   onClick: () => void;
+  zoomLevel: number;
 }
 
 const bugIcons: { [key: string]: string } = {
@@ -28,6 +29,7 @@ const Cell: React.FC<CellProps> = ({
   isValidPlacement,
   isValidMove,
   onClick,
+  zoomLevel,
 }) => {
   const topBug = bugs[bugs.length - 1] ?? null;
 
@@ -46,8 +48,23 @@ const Cell: React.FC<CellProps> = ({
     >
       {topBug ? (
         <>
-          <span className="bug-icon">{bugIcons[topBug.bug_type] || topBug.bug_type[0]}</span>
-          {bugs.length > 1 && <span className="stack-count">{bugs.length}</span>}
+          <span className="bug-icon" style={{ fontSize: `${2 * zoomLevel}rem` }}>
+            {bugIcons[topBug.bug_type] || topBug.bug_type[0]}
+          </span>
+          {bugs.length > 1 && (
+            <span
+              className="stack-count"
+              style={{
+                width: `${19 * zoomLevel}px`,
+                height: `${19 * zoomLevel}px`,
+                fontSize: `${0.8 * zoomLevel}rem`,
+                bottom: `${14 * zoomLevel}px`,
+                left: `${14 * zoomLevel}px`,
+              }}
+            >
+              {bugs.length}
+            </span>
+          )}
         </>
       ) : null}
     </div>

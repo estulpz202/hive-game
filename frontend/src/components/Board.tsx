@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Bug, Position } from '../game';
 import Cell from './Cell';
 import '../styles/Board.css';
@@ -10,6 +10,7 @@ interface BoardProps {
   validMovesForSelecPos: Position[];
   selectedBoardPos: Position | null;
   onBoardCellClick: (q: number, r: number) => void;
+  zoomLevel: number;
 }
 
 const posKey = (q: number, r: number) => `${q},${r}`;
@@ -21,7 +22,12 @@ const Board: React.FC<BoardProps> = ({
   validMovesForSelecPos,
   selectedBoardPos,
   onBoardCellClick,
+  zoomLevel,
 }) => {
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [startDrag, setStartDrag] = useState({ x: 0, y: 0 });
+
   const cellsToRender = new Map<string, Position>();
 
   for (const pos of visiblePositions) {
@@ -36,22 +42,47 @@ const Board: React.FC<BoardProps> = ({
     a.q === b.q ? a.r - b.r : a.q - b.q
   );
 
-  // Define the size of the hexagons (width of a regular hexagon)
-  const hexWidth = 90; // Width of the hexagon
-  const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8; // Height for a regular hexagon
+  // Define the base size of the hexagons (width of a regular hexagon)
+  const baseHexWidth = 90; // Base width of the hexagon
+  const hexWidth = baseHexWidth * zoomLevel; // Scaled width
+  const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8; // Scaled height for a regular hexagon
   const width = hexWidth; // Width for positioning
   const height = hexHeight; // Height for positioning
 
-  // Get the dimensions of the board container
-  const boardWidth = 900;
+  // Get the dimensions of the board container (as defined in board.css)
+  const boardWidth = 1200;
   const boardHeight = 700;
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStartDrag({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging) {
+      const dx = e.clientX - startDrag.x;
+      const dy = e.clientY - startDrag.y;
+      setDragOffset({ x: dragOffset.x + dx, y: dragOffset.y + dy });
+      setStartDrag({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   // Calculate the offset to center (0,0)
-  const offsetX = boardWidth / 2;
-  const offsetY = boardHeight / 2;
+  const offsetX = boardWidth / 2 + dragOffset.x;
+  const offsetY = boardHeight / 2 + dragOffset.y;
 
   return (
-    <div className="board">
+    <div
+      className="board"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
       <div
         className="cell-container"
         style={{
@@ -101,6 +132,7 @@ const Board: React.FC<BoardProps> = ({
                 isValidPlacement={isValidPlacement}
                 isValidMove={isValidMove}
                 onClick={() => onBoardCellClick(pos.q, pos.r)}
+                zoomLevel={zoomLevel}
               />
             </div>
           );
