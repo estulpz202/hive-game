@@ -46,10 +46,6 @@ class Board:
         stack = self._grid.get(position, [])
         return stack[-1] if stack else None
 
-    def get_all_bugs(self) -> list[Bug]:
-        """Returns a flat list of all bugs on the board."""
-        return [bug for stack in self._grid.values() for bug in stack]
-
     def is_occupied(self, position: Position) -> bool:
         """Returns True if there is at least one bug at the position."""
         return bool(self._grid.get(position))

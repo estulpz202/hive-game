@@ -135,23 +135,6 @@ def test_place_third_bug_correctly(board, players):
     assert board.place_bug(bug3, p3)
 
 
-def test_get_all_bugs(board, players):
-    white, black = players
-    p1 = Position(0, 0)
-    p2 = Position(1, 0)
-
-    bug1 = Bug(BugType.QUEEN_BEE, black, p1)
-    bug2 = Bug(BugType.ANT, white, p2)
-
-    assert board.place_bug(bug1, p1)
-    assert board.place_bug(bug2, p2)
-
-    all_bugs = board.get_all_bugs()
-    assert len(all_bugs) == 2
-    assert bug1 in all_bugs
-    assert bug2 in all_bugs
-
-
 def test_can_slide_to(board, players):
     white, black = players
     p1 = Position(0, 0)
