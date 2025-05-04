@@ -1,26 +1,9 @@
-# Ignore Python cache files and folders
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Ignore environment files
-.env
-.venv
-
-# Ignore build artifacts
-dist/
-build/
-*.egg-info/
-
-# Ignore tool and test caches
-.cache/
-.pytest_cache/
-.mypy_cache/
-
-# Ignore system-specific files
+# Ignore global/system-specific files
 .DS_Store
 
-# Ignore IDE/editor configs
+# Ignore IDE/editor settings
 .idea/
 .vscode/
+
+# Ignore environment variable files (if any)
+.env

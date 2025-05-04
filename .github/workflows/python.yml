@@ -26,7 +26,9 @@ jobs:
         run: poetry config virtualenvs.create false
 
       - name: Install Dependencies
+        working-directory: backend
         run: make install
 
       - name: Run Tests
+        working-directory: backend
         run: make test

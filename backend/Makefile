@@ -16,13 +16,13 @@ install:
 lint:
 	poetry run ruff check src/ --fix || true
 
-# Run the project as a script
+# Run the FastAPI server directly
 run:
-	poetry run python src/hive/game.py
+	poetry run uvicorn api.main:app --reload --app-dir src
 
-# Run the project as a module
+# Run the API as a module (alternative style)
 runmod:
-	poetry run python -m hive.game
+	poetry run python -m api.main
 
 # Run all tests using pytest
 test:

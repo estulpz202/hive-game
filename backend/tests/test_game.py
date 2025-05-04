@@ -1,4 +1,4 @@
-from hive.game import Game, Phase, MAX_PLACES_WO_QUEEN
+from hive.game import Game, Phase
 from hive.models.bugtype import BugType
 from hive.models.position import Position
 
