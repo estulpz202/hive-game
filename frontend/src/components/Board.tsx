@@ -36,14 +36,15 @@ const Board: React.FC<BoardProps> = ({
     a.q === b.q ? a.r - b.r : a.q - b.q
   );
 
-  // Define the size of the hexagons
-  const size = 50; // radius of hex
-  const width = size * Math.sqrt(3);
-  const height = size * 2;
+  // Define the size of the hexagons (width of a regular hexagon)
+  const hexWidth = 90; // Width of the hexagon
+  const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8; // Height for a regular hexagon
+  const width = hexWidth; // Width for positioning
+  const height = hexHeight; // Height for positioning
 
   // Get the dimensions of the board container
-  const boardWidth = 900; // Match the width in Board.css
-  const boardHeight = 700; // Match the height in Board.css
+  const boardWidth = 900;
+  const boardHeight = 700;
 
   // Calculate the offset to center (0,0)
   const offsetX = boardWidth / 2;
@@ -88,6 +89,8 @@ const Board: React.FC<BoardProps> = ({
                 left: `${x}px`,
                 top: `${y}px`,
                 transform: 'translate(-50%, -50%)',
+                width: `${hexWidth}px`,
+                height: `${hexHeight}px`,
               }}
             >
               <Cell

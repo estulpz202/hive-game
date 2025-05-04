@@ -1,8 +1,7 @@
 .cell {
-    width: 80px;
-    height: 70px;
+    width: 92.5%;
+    height: 92.5%;
     background-color: #ffffff;
-    border: 2px solid #666;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     display: flex;
     justify-content: center;
@@ -10,77 +9,55 @@
     cursor: pointer;
     position: relative;
     transition: transform 0.2s, background-color 0.2s;
+    box-sizing: border-box;
 }
 
 .cell:hover {
-    transform: scale(1.05);
+    transform: scale(1.075);
 }
 
 .cell.empty {
-    background-color: #d3d3d3;
+    background-color: #ededed;
+}
+
+.cell.black {
+    background-color: #2d2d2d;
+}
+
+.cell.white {
+    background-color: #e9dece;
 }
 
 .cell.valid-placement {
     background-color: #a3e4d7;
-    border-color: #16a085;
 }
 
 .cell.valid-move {
     background-color: #f9e79f;
-    border-color: #d4a017;
 }
 
 .cell.selected {
-    border: 3px solid #3498db;
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
-}
-
-.bug {
-    width: 90%;
-    height: 90%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    font-weight: bold;
-    position: relative;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.bug.black {
-    background-color: #2d2d2d;
-    color: #ffffff;
-    border: 2px solid #1a1a1a;
-}
-
-.bug.white {
-    background-color: #f5f5f5;
-    color: #000000;
-    border: 2px solid #999;
+    background-color: #3498db;
 }
 
 .bug-icon {
+    font-size: 2rem;
     line-height: 1;
+    color: inherit;
 }
 
 .stack-count {
     position: absolute;
-    bottom: 5px;
-    right: 5px;
+    bottom: 14px;
+    left: 14px;
     background-color: #e74c3c;
     color: white;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 0.8rem;
     font-weight: normal;
-}
-
-.empty-hex {
-    width: 100%;
-    height: 100%;
 }

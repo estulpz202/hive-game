@@ -32,6 +32,7 @@ const Cell: React.FC<CellProps> = ({
   const topBug = bugs[bugs.length - 1] ?? null;
 
   const classes = ['cell'];
+  if (topBug) classes.push(topBug.owner.toLowerCase());
   if (isSelected) classes.push('selected');
   if (isValidPlacement) classes.push('valid-placement');
   if (isValidMove) classes.push('valid-move');
@@ -44,19 +45,11 @@ const Cell: React.FC<CellProps> = ({
       data-coord={`(${q}, ${r})`}
     >
       {topBug ? (
-        <div
-          className={`bug ${topBug.owner.toLowerCase()}`}
-          style={{
-            backgroundColor: topBug.owner === 'BLACK' ? '#2d2d2d' : '#f5f5f5',
-            color: topBug.owner === 'BLACK' ? '#ffffff' : '#000000',
-          }}
-        >
+        <>
           <span className="bug-icon">{bugIcons[topBug.bug_type] || topBug.bug_type[0]}</span>
           {bugs.length > 1 && <span className="stack-count">{bugs.length}</span>}
-        </div>
-      ) : (
-        <div className="empty-hex" />
-      )}
+        </>
+      ) : null}
     </div>
   );
 };
