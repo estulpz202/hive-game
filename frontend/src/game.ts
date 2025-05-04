@@ -33,5 +33,6 @@ export interface Bug {
     bugs: Bug[];
     players: PlayerState[];
     can_pass: boolean;
+    winner: string | null;
   }
   
