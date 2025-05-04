@@ -50,7 +50,7 @@ def test_game_phase_switches_after_both_queens():
     assert game.phase == Phase.PLACE_MOVE
 
 
-def test_move_bug_before_after_placing_queen():
+def test_move_bug_fail_before_placing_queen():
     game = Game()
     wpos = Position(0, 0)
     bpos = Position(1, 0)
@@ -64,14 +64,23 @@ def test_move_bug_before_after_placing_queen():
     to_pos = Position(0, 1)
     assert not game.move_bug(from_pos, to_pos)
 
-    # Places queens
-    qpos = Position(0, -1)
-    assert game.place_bug(BugType.QUEEN_BEE, qpos)
-    assert game.place_bug(BugType.QUEEN_BEE, Position(2, 0))
 
-    # Now try to move it (should work)
-    from_pos = qpos
-    to_pos = Position(1, -1)
+def test_move_bug_success_after_queen():
+    game = Game()
+
+    # White places queen
+    assert game.place_bug(BugType.QUEEN_BEE, Position(0, 0))
+    # Black places queen
+    assert game.place_bug(BugType.QUEEN_BEE, Position(1, 0))
+
+    # White places ANT
+    assert game.place_bug(BugType.ANT, Position(-1, 0))
+    # Black places ANT
+    assert game.place_bug(BugType.ANT, Position(2, 0))
+
+    # White moves ANT
+    from_pos = Position(-1, 0)
+    to_pos = Position(-1, 1)
     assert game.move_bug(from_pos, to_pos)
 
 
