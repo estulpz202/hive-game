@@ -5,7 +5,7 @@ from hive.models.bug import Bug
 from hive.models.player import Player
 from hive.models.position import Position
 
-MAX_SLIDE_BLOCKERS = 1  # Max number of blocking neighbors to allow sliding
+NUM_BLOCKERS_FOM = 2  # The number of blocking neighbors to restrict sliding
 
 class Board:
     """
@@ -26,6 +26,17 @@ class Board:
             return stack.pop()
         return None
 
+    def _drop_bug(self, bug: Bug, position: Position) -> None:
+        """Unconditionally places a bug on the stack at the given position."""
+        bug.position = position
+        bug.height = len(self._grid[position])
+        self._grid[position].append(bug)
+
+        # Update the player's reserve and placed bugs
+        player = bug.owner
+        player.remove_from_reserve(bug.bug_type)
+        player.add_to_placed(bug)
+
     def get_stack(self, position: Position) -> list[Bug]:
         """Returns the bug stack at a given position."""
         return self._grid.get(position, [])
@@ -34,10 +45,6 @@ class Board:
         """Returns the top bug at a position, or None if empty."""
         stack = self._grid.get(position, [])
         return stack[-1] if stack else None
-
-    def get_bug_at(self, position: Position) -> Bug | None:
-        """Alias for get_top_bug — returns the bug on top at a position."""
-        return self.get_top_bug(position)
 
     def get_all_bugs(self) -> list[Bug]:
         """Returns a flat list of all bugs on the board."""
@@ -51,70 +58,123 @@ class Board:
         """Returns all positions that have at least one bug."""
         return (pos for pos, stack in self._grid.items() if stack)
 
-    def can_place_bug(self, player: Player, position: Position) -> bool:
+    def get_all_valid_positions(self, player: Player) -> set[Position]:
         """
-        Checks whether a bug can be placed at the given position.
-
-        Conditions: The tile is empty, bug must touch at least one of their own bugs,
-        bug may not touch opponent's bugs. Note, a stack takes the color of the bug on top.
-
-        Exceptions: The first bug placed will not touch anything, and
-        the second bug placed will touch the first bug of the opponent.
+        Returns a set of legal positions where the player can place any bug from reserve.
 
         Args:
             player (Player): The player attempting to place the bug.
-            position (Position): The position where the bug is to be placed.
+
+        Returns:
+            set[Position]: Legal placement tiles based on placement rules.
+        """
+        occupied = list(self.occupied_positions())
+
+        # First bug placed (board unoccupied)
+        # Allow isolated placement at (0, 0)
+        if not occupied:
+            return {Position(0, 0)}
+
+        # Second bug placed (one occupied pos and stack height is 1)
+        # Must touch the opponent's first bug
+        if len(occupied) == 1:
+            only_pos = occupied[0]
+            if len(self.get_stack(only_pos)) == 1:
+                return set(only_pos.neighbors())
+
+        # Normal case: Must touch own bug(s) only
+        positions = set()
+        seen = set()
+        for bug in player.placed:
+            # bug must be on top of the stack
+            if bug.height != len(self.get_stack(bug.position)) - 1:
+                continue
+
+            for pos in bug.position.neighbors():
+                # Skip if occupied or already seen
+                if self.is_occupied(pos) or pos in seen:
+                    continue
+                seen.add(pos)
+                # Get the top bug from each occupied neighboring position
+                nbor_bugs = [self.get_top_bug(n) for n in pos.neighbors() if self.is_occupied(n)]
+
+                # Must have neighbors, and all of them must belong to the player
+                if nbor_bugs and all(b.owner == player for b in nbor_bugs if b is not None):
+                    positions.add(pos)
+
+        return positions
+
+    def can_place_bug(self, player: Player, pos: Position,
+                      valid_positions: set[Position] | None = None) -> bool:
+        """
+        Checks whether a bug can be placed at the given position.
+
+        Conditions: The tile is empty, bug must touch only their own bugs,
+        some exceptions at start. Note, a stack takes the color of the bug on top.
+
+        Args:
+            player (Player): The player attempting to place the bug.
+            pos (Position): The position where the bug is to be placed.
+            valid_positions (set[Position] | None): Optional precomputed legal positions.
 
         Returns:
             bool: True if the bug can be legally placed, False otherwise.
         """
-        if self.is_occupied(position):
+        if valid_positions is not None:
+            return pos in valid_positions
+
+        if self.is_occupied(pos):
             return False
 
-        # First bug placed: allow isolated placement
-        # Checks if board is fully unoccupied
-        if not any(self.occupied_positions()):
-            return True
+        occupied = list(self.occupied_positions())
 
+        # First bug placed (board unoccupied)
+        # Allow isolated placement at (0, 0)
+        if not occupied:
+            return Position(0, 0) == pos
+
+        # Second bug placed (one occupied pos and stack height is 1)
+        # Must touch the opponent's first bug
+        if len(occupied) == 1 and len(self.get_stack(occupied[0])) == 1:
+            return pos in occupied[0].neighbors()
+
+        # Normal case: Must touch own bug(s) only
         # Get the top bug from each occupied neighboring position
-        neighbor_bugs = [
-            self.get_top_bug(nbor)
-            for nbor in position.neighbors() if self.is_occupied(nbor)
-        ]
+        nbor_bugs = [self.get_top_bug(n) for n in pos.neighbors() if self.is_occupied(n)]
 
-        # Second bug placed: must touch the opponent's first bug
-        # Return checks if at least one neighboring bug belongs to the opponent
-        if len(list(self.occupied_positions())) == 1:
-            return any(b.owner != player for b in neighbor_bugs if b is not None)
-
-        if not neighbor_bugs:
+        # Must have at least one neighbor
+        if not nbor_bugs:
             return False
 
-        # Checks if all neighboring bugs belong to the same player
-        return all(b.owner == player for b in neighbor_bugs if b is not None)
+        # Check if all neighboring bugs belong to player
+        return all(b.owner == player for b in nbor_bugs if b is not None)
 
-    def place_bug(self, bug: Bug, position: Position) -> bool:
+    def place_bug(self, bug: Bug, pos: Position,
+                  valid_positions: set[Position] | None = None) -> bool:
         """
         Attempts to place a bug at a given position on the board.
 
         Args:
             bug (Bug): The bug to place.
-            position (Position): The target position to place the bug.
+            pos (Position): The target position to place the bug.
+            valid_positions (set[Position] | None): Optional precomputed legal positions.
 
         Returns:
             bool: True if the bug was successfully placed, False otherwise.
         """
-        if not self.can_place_bug(bug.owner, position):
+        if not self.can_place_bug(bug.owner, pos, valid_positions):
             return False
 
-        bug.position = position
-        bug.on_top = len(self._grid[position])
-        self._grid[position].append(bug)
+        self._drop_bug(bug, pos)
         return True
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
         """Checks if the destination will remain connected to the hive after moving."""
-        # If from_pos stays occupied, safe to just check neighbors of to_pos
+        # If destination is already part of the hive (occupied), it's connected
+        if self.is_occupied(to_pos):
+            return True
+
+        # Else if: from_pos stays occupied, safe to just check neighbors of to_pos
         if len(self.get_stack(from_pos)) > 1:
             return any(self.is_occupied(nbor) for nbor in to_pos.neighbors())
 
@@ -182,10 +242,9 @@ class Board:
 
     def can_slide_to(self, from_pos: Position, to_pos: Position) -> bool:
         """
-        Determines if a bug can slide from one position to another.
+        Determines if a bug can slide between two adjacent positions.
 
-        Conditions: Dest must be unoccupied, both positions must be adjacent, and
-        Freedom of Movement (need one free shared neighbor to allow sliding, no tight gap).
+        Conditions: Both positions must be adjacent and follows FOM rule.
 
         Args:
             from_pos (Position): The bug's current position.
@@ -194,9 +253,6 @@ class Board:
         Returns:
             bool: True if the bug can legally slide to the destination, False otherwise.
         """
-        if self.is_occupied(to_pos):
-            return False
-
         if to_pos not in from_pos.neighbors():
             return False
 
@@ -206,9 +262,75 @@ class Board:
         blocked_sides = sum(1 for nbor in shared_neighbors if self.is_occupied(nbor))
 
         # Bug can slide if fewer than 2 adjacent tiles block the gap
-        return blocked_sides <= MAX_SLIDE_BLOCKERS
+        return blocked_sides < NUM_BLOCKERS_FOM
 
-    def can_move_bug(self, bug: Bug, to_pos: Position) -> bool:
+    def can_climb_to(self, from_pos: Position, to_pos: Position) -> bool:
+        """
+        Determines if a bug can legally climb between two adjacent stacks.
+
+        Conditions: Both positions must be adjacent and follows FOM rule,
+        uses can_slide if same level, otherwise checks if both neighbors taller.
+
+        Args:
+            from_pos (Position): Current position of the beetle.
+            to_pos (Position): Target adjacent position.
+
+        Returns:
+            bool: True if climbing is allowed, False otherwise.
+        """
+        if to_pos not in from_pos.neighbors():
+            return False
+
+        # Subtract 1 since bug is being moved, so doesn't count towards height
+        from_height = len(self.get_stack(from_pos)) - 1
+        to_height = len(self.get_stack(to_pos))
+
+        # If heights are equal, treat as a slide (must obey slide FOM)
+        if from_height == to_height:
+            return self.can_slide_to(from_pos, to_pos)
+
+        # Get neighbors shared by both from and to positions
+        shared_neighbors = set(from_pos.neighbors()) & set(to_pos.neighbors())
+
+        # Count shared neighbors that are taller than both from and to stacks
+        taller_blockers = sum(
+            1 for nbor in shared_neighbors
+            if len(self.get_stack(nbor)) > from_height and len(self.get_stack(nbor)) > to_height
+        )
+
+        # Buc can climb is allowed if fewer than 2 taller blockers exist
+        return taller_blockers < NUM_BLOCKERS_FOM
+
+    def get_all_valid_moves(self, player: Player) -> dict[Bug, list[Position]]:
+        """
+        Returns a dictionary of player's movable bugs and their legal destination positions.
+
+        Args:
+            player (Player): The current player.
+
+        Returns:
+            dict[Bug, list[Position]]: Map from bug to valid move positions.
+        """
+        # Check if the player has placed their queen
+        if not player.has_placed_queen:
+            return {}
+
+        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
+        moves = {}
+        for bug in player.placed:
+            # Skip if bug not on top
+            if self.get_top_bug(bug.position) != bug:
+                continue
+
+            behavior = get_behavior_for(bug.bug_type)
+            valid = behavior.get_valid_moves(bug, self)
+            if valid:
+                moves[bug] = valid
+
+        return moves
+
+    def can_move_bug(self, bug: Bug, to_pos: Position,
+                     valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
         Determines if the given bug can legally move to the specified position.
 
@@ -218,11 +340,13 @@ class Board:
         Args:
             bug (Bug): The bug attempting to move.
             to_pos (Position): The target position for the bug.
+            valid_moves (dict[Bug, list[Position]] | None): Optional precomputed valid moves.
 
         Returns:
             bool: True if the bug can legally move to the target position, False otherwise.
         """
-        from hive.behaviors import get_behavior_for  # Lazy import to avoid circular dependency
+        if valid_moves is not None:
+            return to_pos in valid_moves.get(bug, [])
 
         if bug.position == to_pos:
             return False
@@ -237,26 +361,29 @@ class Board:
             return False
 
         # Check bug specific movement rules and FOM via behavior strategy
+        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
         behavior = get_behavior_for(bug.bug_type)
         if to_pos not in behavior.get_valid_moves(bug, self):
             return False
 
         return True
 
-    def move_bug(self, bug: Bug, to_pos: Position) -> bool:
+    def move_bug(self, bug: Bug, to_pos: Position,
+                 valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
         Moves a bug to a new position if the move is legal.
 
         Args:
             bug (Bug): The bug to move.
             to_pos (Position): The target position for the bug.
+            valid_moves (dict[Bug, list[Position]] | None): Optional precomputed valid moves.
 
         Returns:
             bool: True if the bug was moved successfully, False otherwise.
         """
-        if not self.can_move_bug(bug, to_pos):
+        if not self.can_move_bug(bug, to_pos, valid_moves):
             return False
 
         self.remove_top_bug(bug.position)
-        self.place_bug(bug, to_pos)
+        self._drop_bug(bug, to_pos)
         return True

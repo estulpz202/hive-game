@@ -9,9 +9,9 @@ class QueenBehavior(BugBehavior):
 
     def get_valid_moves(self, bug: Bug, board: Board) -> list[Position]:
         """
-        Returns valid adjacent positions the queen can slide into.
+        Returns valid adjacent positions the qeen can slide into.
 
-        Conditions: Removing bug obeys one hive rule, dest is adjacent,
+        Conditions: Removing queen obeys one hive rule, dest is adjacent,
         dest is unoccupied, dest obeys OHR, and dest obeys FOM.
 
         Args:
@@ -19,22 +19,22 @@ class QueenBehavior(BugBehavior):
             board (Board): The game board.
 
         Returns:
-            list[Position]: Legal move destinations for the queen.
+            list[Position]: Valid destinations for the queen.
         """
-        valid = []
-
         # Check one hive rule for removing bug
         if not board.is_one_hive_move(bug.position):
-            return valid
+            return []
+
+        valid = []
 
         # Check adjacent destinations
         for dest in bug.position.neighbors():
             # Check dest unoccupied, OHR for dest, and FOM
-            if board.is_occupied(dest):
+            if (board.is_occupied(dest) or
+                not board.dest_is_connected(bug.position, dest) or
+                not board.can_slide_to(bug.position, dest)):
                 continue
-            if not board.dest_is_connected(bug.position, dest):
-                continue
-            if board.can_slide_to(bug.position, dest):
-                valid.append(dest)
+
+            valid.append(dest)
 
         return valid

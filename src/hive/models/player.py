@@ -18,10 +18,8 @@ class Player:
             + [BugType.GRASSHOPPER] * 3
         )
         self.placed: list = []
-
-    def has_placed_queen(self) -> bool:
-        """Return True if the Queen Bee has been placed on the board."""
-        return any(bug.bug_type == BugType.QUEEN_BEE for bug in self.placed)
+        self.has_placed_queen: bool = False
+        self.queen_bug = None
 
     def remove_from_reserve(self, bug_type: BugType) -> bool:
         """
@@ -38,3 +36,6 @@ class Player:
     def add_to_placed(self, bug) -> None:
         """Adds a bug to the placed list."""
         self.placed.append(bug)
+        if not self.has_placed_queen and bug.bug_type == BugType.QUEEN_BEE:
+            self.has_placed_queen = True
+            self.queen_bug = bug

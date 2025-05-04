@@ -13,6 +13,8 @@ def test_player_initialization():
     assert player.reserve.count(BugType.SPIDER) == 2
     assert player.reserve.count(BugType.GRASSHOPPER) == 3
     assert player.placed == []
+    assert player.has_placed_queen is False
+    assert player.queen_bug is None
 
 
 def test_remove_from_reserve_success():
@@ -29,18 +31,22 @@ def test_remove_from_reserve_failure():
     assert player.remove_from_reserve(BugType.ANT) is False
 
 
-def test_add_to_placed_and_has_placed_queen():
+def test_add_to_placed_and_queen():
     player = Player("white")
-    bug = Bug(BugType.QUEEN_BEE, player, Position(0, 0))
-    player.add_to_placed(bug)
+    queen = Bug(BugType.QUEEN_BEE, player, Position(0, 0))
+    player.add_to_placed(queen)
 
-    assert bug in player.placed
-    assert player.has_placed_queen() is True
+    assert queen in player.placed
+    assert player.has_placed_queen is True
+    assert player.queen_bug is queen
+
 
 
 def test_has_not_placed_queen():
     player = Player("white")
-    bug = Bug(BugType.SPIDER, player, Position(0, 0))
-    player.add_to_placed(bug)
+    spider = Bug(BugType.SPIDER, player, Position(0, 0))
+    player.add_to_placed(spider)
 
-    assert player.has_placed_queen() is False
+    assert spider in player.placed
+    assert player.has_placed_queen is False
+    assert player.queen_bug is None

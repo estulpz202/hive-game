@@ -7,7 +7,7 @@ from hive.models.position import Position
 
 # @dataclass is used to automatically generate special methods.
 # Like __init__, __repr__, and __eq__ for the Bug class.
-@dataclass
+@dataclass(eq=False, unsafe_hash=True)
 class Bug:
     """
     Represents a single bug token on the board.
@@ -17,5 +17,5 @@ class Bug:
 
     bug_type: BugType
     owner: Player
-    position: Position
-    on_top: int = 0  # 0 = ground level, >0 = height in stack
+    position: Position | None = None # Position is none before its placed
+    height: int = -1 # -1 before its placed, 0 when on ground, >0 when stacked
