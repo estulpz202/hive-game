@@ -40,6 +40,7 @@ class Game:
         self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
         self.cur_player_passed = False
         self.prev_player_passed = False
+        self.all_bugs = set()
 
     @property
     def opponent_player(self) -> Player:
@@ -95,6 +96,7 @@ class Game:
         self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
         self.prev_player_passed = self.cur_player_passed
         self.cur_player_passed = self._can_player_pass()
+        self.all_bugs = self.get_all_bugs()
 
         # Check if the game has ended
         if self._check_game_end():
@@ -192,3 +194,17 @@ class Game:
             return True
         else:
             return False
+
+    def get_all_bugs(self) -> list[Bug]:
+        """Returns all bugs placed by both players."""
+        return self.player_white.placed + self.player_black.placed
+
+    @property
+    def visible_positions(self) -> set[Position]:
+        """Returns all board positions with bugs or adjacent to bugs."""
+        visible = set()
+        for bug in self.all_bugs:
+            pos = bug.position
+            visible.add(pos)
+            visible.update(pos.neighbors())
+        return visible

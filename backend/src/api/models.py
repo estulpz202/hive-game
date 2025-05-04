@@ -60,6 +60,12 @@ class PlayerStateView(BaseModel):
             queen_placed=player.has_placed_queen
         )
 
+class PositionView(BaseModel):
+    """View model for q/r coordinate for valid placements or movements."""
+
+    q: int
+    r: int
+
 class GameStateResponse(BaseModel):
     """View model for the current game state."""
 
@@ -68,15 +74,17 @@ class GameStateResponse(BaseModel):
     bugs: list[BugView]
     players: list[PlayerStateView]
     can_pass: bool
-    winner: str | None = None  # "White", "Black", or "Draw"
+    winner: str | None = None
+    visible_positions: list[PositionView]
 
     @staticmethod
     def from_game(game: Game) -> "GameStateResponse":
         """Creates a GameStateResponse from a Game instance."""
-        bugs = [BugView.from_bug(b) for b in game.board.get_all_bugs()]
+        bugs = [BugView.from_bug(b) for b in game.all_bugs]
         players = [PlayerStateView.from_player(game.player_white),
                    PlayerStateView.from_player(game.player_black)]
         winner = game.get_winner() if game.phase == Phase.GAME_OVER else None
+        visible_positions = [PositionView(q=p.q, r=p.r) for p in game.visible_positions]
 
         return GameStateResponse(
             phase=game.phase.value,
@@ -84,14 +92,9 @@ class GameStateResponse(BaseModel):
             bugs=bugs,
             players=players,
             can_pass=game.cur_player_passed,
-            winner=winner
+            winner=winner,
+            visible_positions=visible_positions
         )
-
-class PositionView(BaseModel):
-    """View model for q/r coordinate for valid placements or movements."""
-
-    q: int
-    r: int
 
 # Request DTO (Data Transfer Object) is a structured object that defines the data a client must
 # send when calling endpoints. It separates incoming data from internal logic.
