@@ -2,7 +2,6 @@ import React from 'react';
 import { Bug } from '../game';
 import '../styles/Cell.css';
 
-/** Props expected by a Cell */
 interface CellProps {
   q: number;
   r: number;
@@ -13,9 +12,14 @@ interface CellProps {
   onClick: () => void;
 }
 
-/**
- * Renders a single hex cell. Shows stacked bugs and highlights.
- */
+const bugIcons: { [key: string]: string } = {
+  'QueenBee': '🐝',
+  'Beetle': '🪲',
+  'Spider': '🕷️',
+  'Ant': '🐜',
+  'Grasshopper': '🦗',
+};
+
 const Cell: React.FC<CellProps> = ({
   q,
   r,
@@ -31,6 +35,7 @@ const Cell: React.FC<CellProps> = ({
   if (isSelected) classes.push('selected');
   if (isValidPlacement) classes.push('valid-placement');
   if (isValidMove) classes.push('valid-move');
+  if (!topBug) classes.push('empty');
 
   return (
     <div
@@ -38,22 +43,20 @@ const Cell: React.FC<CellProps> = ({
       onClick={onClick}
       data-coord={`(${q}, ${r})`}
     >
-      <div className="hex">
-        {topBug ? (
-          <div
-            className={`bug`}
-            style={{
-              backgroundColor: topBug.owner === 'BLACK' ? '#333' : '#fff',
-              color: topBug.owner === 'BLACK' ? '#fff' : '#000',
-            }}
-          >
-            {topBug.bug_type[0]}
-            {bugs.length > 1 && <span className="stack-count">{bugs.length}</span>}
-          </div>
-        ) : (
-          <div className="empty" />
-        )}
-      </div>
+      {topBug ? (
+        <div
+          className={`bug ${topBug.owner.toLowerCase()}`}
+          style={{
+            backgroundColor: topBug.owner === 'BLACK' ? '#2d2d2d' : '#f5f5f5',
+            color: topBug.owner === 'BLACK' ? '#ffffff' : '#000000',
+          }}
+        >
+          <span className="bug-icon">{bugIcons[topBug.bug_type] || topBug.bug_type[0]}</span>
+          {bugs.length > 1 && <span className="stack-count">{bugs.length}</span>}
+        </div>
+      ) : (
+        <div className="empty-hex" />
+      )}
     </div>
   );
 };

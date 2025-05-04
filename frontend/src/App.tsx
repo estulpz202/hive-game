@@ -5,13 +5,8 @@ import BugPicker from './components/BugPicker';
 import GameOverBanner from './components/GameOverBanner';
 import './styles/App.css';
 
-/** Type of the props field for a React component */
 interface Props {}
 
-/**
- * Extended AppState type that includes the serialized GameState from the backend
- * and additional frontend-only state for UI interactions.
- */
 interface AppState extends GameState {
   selectedReserveBug: string | null;
   selectedBoardPos: Position | null;
@@ -20,22 +15,9 @@ interface AppState extends GameState {
   errorMessage: string | null;
 }
 
-/**
- * Use generics to define the types of props and state in a React component.
- * Both are used to manage component data, and changes to them trigger view updates.
- * Typically, props are set by the parent, while state is managed internally by the component.
- * 
- * Main App component for the Hive game.
- * Controls game logic flow, communicates with backend API, and updates view accordingly.
- */
 class App extends React.Component<Props, AppState> {
   private initialized: boolean = false;
 
-  /**
-   * Initializes the game state. State has AppState type.
-   * 
-   * @param props has type Props
-   */
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -54,20 +36,13 @@ class App extends React.Component<Props, AppState> {
     };
   }
 
-  /**
-   * Lifecycle method: called once after component mounts.
-   * Prevents duplicate initialization via a flag.
-   */
   componentDidMount(): void {
     if (!this.initialized) {
       this.newGame();
       this.initialized = true;
     }
   }
-  
-  /**
-   * Starts a new game by requesting a reset game state from the backend.
-   */
+
   newGame = async () => {
     try {
       const response = await fetch('/newgame', { method: 'POST' });
@@ -79,13 +54,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Updates local frontend state from the backend game response.
-   * Clears any selection/highlights unless preserved explicitly.
-   * 
-   * @param data - The game state JSON object from the backend
-   * @param preserveSelection - If true, keeps the current bug or position selection
-   */
   updateGameState = (data: GameState, preserveSelection: boolean = false) => {
     this.setState({
       phase: data.phase,
@@ -103,12 +71,7 @@ class App extends React.Component<Props, AppState> {
     });
   };
 
-  /**
-   * Called when a bug is selected from the reserve.
-   * Triggers a request to fetch valid placements.
-   */
   handleReserveBugSelect = async (bugType: string) => {
-    // Deselect if clicking again on the selected bug
     if (this.state.selectedReserveBug === bugType) {
       this.setState({
         selectedReserveBug: null,
@@ -117,8 +80,11 @@ class App extends React.Component<Props, AppState> {
       });
       return;
     }
-    
-    this.setState({ selectedReserveBug: bugType, selectedBoardPos: null });
+
+    this.setState({
+      selectedReserveBug: bugType,
+      selectedBoardPos: null,
+    });
     try {
       const response = await fetch('/valid-placements');
       const data: Position[] = await response.json();
@@ -129,10 +95,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Called when a cell on the board is clicked.
-   * Decides whether to attempt placement or movement.
-   */
   handleBoardCellClick = (q: number, r: number) => {
     const { selectedReserveBug, selectedBoardPos } = this.state;
 
@@ -145,9 +107,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Sends a request to place a selected bug at a target position.
-   */
   placeBug = async (q: number, r: number) => {
     const { selectedReserveBug } = this.state;
     if (!selectedReserveBug) return;
@@ -166,9 +125,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Sends a request to fetch valid move destinations for a bug at (q, r).
-   */
   fetchValidMoves = async (q: number, r: number) => {
     try {
       const response = await fetch(`/valid-moves?q=${q}&r=${r}`);
@@ -184,9 +140,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Sends a move request for a selected bug.
-   */
   moveBug = async (from: Position, to: Position) => {
     try {
       const response = await fetch('/move', {
@@ -207,9 +160,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Sends a request to pass the turn. Only allowed if no valid actions exist.
-   */
   handlePass = async () => {
     try {
       const response = await fetch('/pass', { method: 'POST' });
@@ -221,9 +171,6 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  /**
-   * Renders any error message as a dismissible banner.
-   */
   renderError(): React.ReactNode {
     const { errorMessage } = this.state;
     if (!errorMessage) return null;
@@ -236,9 +183,20 @@ class App extends React.Component<Props, AppState> {
     );
   }
 
-  /**
-   * Main UI render method. Shows bug picker, player info, board, and controls.
-   */
+  getPhaseInstruction = (): string => {
+    const currentPhase = this.state.phase;
+    switch (currentPhase) {
+      case 'Start':
+        return 'Place bugs from reserve. After placing your queen (within 4 turns), you can move.';
+      case 'PlaceOrMove':
+        return 'Place a bug from reserve or move one in play. Valid actions are highlighted.';
+      case 'GameOver':
+        return 'Start a new game to play again.';
+      default:
+        return '';
+    }
+  };
+
   render(): React.ReactNode {
     const {
       current_player,
@@ -253,29 +211,26 @@ class App extends React.Component<Props, AppState> {
       winner,
       visible_positions,
     } = this.state;
-  
-    const playerState = players.find(p => p.color === current_player) || null;
-  
+
     return (
       <div className="App">
         <h1>Hive</h1>
-  
+
         <div className="info-panel">
-          <p><strong>Current Player:</strong> {current_player || '—'}</p>
-          <p><strong>Phase:</strong> {phase}</p>
+          <p><strong>Player:</strong> {current_player || '—'}</p>
+          <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
           {winner && phase === 'GameOver' && (
             <p><strong>Result:</strong> {winner === 'Draw' ? 'Draw' : `${winner} wins!`}</p>
           )}
         </div>
-  
+
         <div className="controls">
           <button onClick={this.newGame}>New Game</button>
           {can_pass && <button onClick={this.handlePass}>Pass</button>}
         </div>
-  
+
         {this.renderError()}
-  
-        {/* Always render both reserves, current player can select */}
+
         <div className="bug-pickers">
           {players.map((p) => (
             <BugPicker
@@ -287,7 +242,7 @@ class App extends React.Component<Props, AppState> {
             />
           ))}
         </div>
-  
+
         <div className="board-wrapper">
           <Board
             bugs={bugs}
@@ -298,13 +253,13 @@ class App extends React.Component<Props, AppState> {
             selectedBoardPos={selectedBoardPos}
           />
         </div>
-  
+
         {phase === 'GameOver' && (
           <GameOverBanner winner={winner || 'Unknown'} onRestart={this.newGame} />
         )}
       </div>
     );
-  }  
+  }
 }
 
 export default App;

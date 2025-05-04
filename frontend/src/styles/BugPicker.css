@@ -1,5 +1,20 @@
 .bug-picker {
     margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bug-picker.current-player {
+    border-color: #4a90e2;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+.bug-picker h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
 }
 
 .bug-options {
@@ -14,6 +29,12 @@
     border: 2px solid #444;
     background-color: white;
     cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.bug-button:hover {
+    background-color: #f0f0f0;
 }
 
 .bug-button.selected {
