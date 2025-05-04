@@ -2,6 +2,8 @@
 
 This project is a full-stack implementation of the game **Hive**. It features a Python backend using modern tools and a modular React frontend.
 
+Hive is an abstract strategy game for two players. Each player controls a set of bugs; Queen Bee, Beetles, Spiders, Ants, and Grasshoppers. They must surround the opponent’s Queen to win. This implementation currently includes the base game (expansion bugs like Ladybug, Mosquito, and Pill bug planned).
+
 ## 📦 Tech Stack
 
 - **Backend**: Python with Poetry and FastAPI (planned)
@@ -9,10 +11,6 @@ This project is a full-stack implementation of the game **Hive**. It features a 
 - **Testing**: Test suite with `pytest`
 - **Design**: Clean, extensible object-oriented architecture with well-structured, readable code
 - **Pattern**: MVC-style separation of logic, API, and view
-
-## 🎮 Game Rules
-
-Hive is an abstract strategy game for two players. Each player controls a set of bugs; Queen Bee, Beetles, Spiders, Ants, and Grasshoppers. They must surround the opponent’s Queen to win. This implementation currently includes the base game (expansion bugs like Ladybug, Mosquito, and Pill bug planned).
 
 ## 🛠 Getting Started
 
@@ -22,9 +20,8 @@ Hive is an abstract strategy game for two players. Each player controls a set of
 # Install Poetry if needed
 curl -sSL https://install.python-poetry.org | python3 -
 
-# Clone and enter the repo
-git clone https://github.com/estulpz202/hive-game.git
-cd hive-game
+# Enter backend folder
+cd backend
 
 # Install dependencies
 make install
@@ -35,6 +32,12 @@ make install
 ```bash
 # To be addded
 ```
+
+> Note: Both the frontend and backend must be running simultaneously for the game to function properly.
+
+## 🎮 How to Play (Interface Instructions)
+
+To be addded
 
 ## 👤 Author
 
