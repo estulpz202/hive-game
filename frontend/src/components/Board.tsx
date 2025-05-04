@@ -49,35 +49,57 @@ const Board: React.FC<BoardProps> = ({
 
   return (
     <div className="board">
-      {sortedCells.map((pos) => {
-        const bugsAtPos = bugs
-          .filter((b) => b.q === pos.q && b.r === pos.r)
-          .sort((a, b) => a.height - b.height); // bottom to top
-
-        const isSelected =
-          selectedBoardPos && selectedBoardPos.q === pos.q && selectedBoardPos.r === pos.r;
-
-        const isValidPlacement = validPlacements.some(
-          (p) => p.q === pos.q && p.r === pos.r
-        );
-
-        const isValidMove = validMovesForSelecPos.some(
-          (p) => p.q === pos.q && p.r === pos.r
-        );
-
-        return (
-          <Cell
-            key={posKey(pos.q, pos.r)}
-            q={pos.q}
-            r={pos.r}
-            bugs={bugsAtPos}
-            isSelected={isSelected}
-            isValidPlacement={isValidPlacement}
-            isValidMove={isValidMove}
-            onClick={() => onBoardCellClick(pos.q, pos.r)}
-          />
-        );
-      })}
+      <div
+        className="cell-container"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+        {sortedCells.map((pos) => {
+          const bugsAtPos = bugs
+            .filter((b) => b.q === pos.q && b.r === pos.r)
+            .sort((a, b) => a.height - b.height); // bottom to top
+    
+          const isSelected =
+            selectedBoardPos && selectedBoardPos.q === pos.q && selectedBoardPos.r === pos.r;
+    
+          const isValidPlacement = validPlacements.some(
+            (p) => p.q === pos.q && p.r === pos.r
+          );
+    
+          const isValidMove = validMovesForSelecPos.some(
+            (p) => p.q === pos.q && p.r === pos.r
+          );
+    
+          // Convert axial to pixel position
+          const size = 40; // radius of hex
+          const width = size * Math.sqrt(3);
+          const height = size * 2;
+          const x = width * (pos.q + pos.r / 2);
+          const y = height * (3 / 4) * pos.r;
+    
+          return (
+            <div
+              key={posKey(pos.q, pos.r)}
+              className="cell-wrapper"
+              style={{ left: `${x}px`, top: `${y}px` }}
+            >
+              <Cell
+                q={pos.q}
+                r={pos.r}
+                bugs={bugsAtPos}
+                isSelected={isSelected}
+                isValidPlacement={isValidPlacement}
+                isValidMove={isValidMove}
+                onClick={() => onBoardCellClick(pos.q, pos.r)}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

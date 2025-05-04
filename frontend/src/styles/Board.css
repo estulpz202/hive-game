@@ -1,12 +1,15 @@
 .board {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    gap: 8px;
-    padding: 20px;
-    justify-content: center;
-    align-content: start;
-    min-height: 400px;
+    position: relative;
+    width: 800px;   /* or 100%, or set via props */
+    height: 600px;  /* adjust to fit your expected board size */
+    margin: 0 auto; /* center horizontally in page */
     background-color: #f9f9f9;
     border: 2px solid #ccc;
     border-radius: 8px;
+    overflow: visible;
+}
+
+.cell-wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
 }

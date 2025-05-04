@@ -1,12 +1,19 @@
 .cell {
-    width: 60px;
+    width: 70px;
     height: 60px;
+    background-color: white;
     border: 2px solid #bbb;
-    border-radius: 8px;
+    clip-path: polygon(
+    50% 0%,
+    100% 25%,
+    100% 75%,
+    50% 100%,
+    0% 75%,
+    0% 25%
+    );
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
     cursor: pointer;
     position: relative;
     transition: background-color 0.2s;
@@ -20,16 +27,39 @@
     background-color: #fef3bd;
 }
 
-.cell.selected {
-    outline: 3px solid #4a90e2;
+.cell.selected::after {
+    content: "";
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    clip-path: polygon(
+    50% 0%,
+    100% 25%,
+    100% 75%,
+    50% 100%,
+    0% 75%,
+    0% 25%
+    );
+    border: 3px solid #4a90e2;
+    box-sizing: border-box;
+    pointer-events: none;
 }
 
-.hex {
+.empty {
     width: 100%;
     height: 100%;
+    background-color: #ddd; /* light gray */
     display: flex;
     justify-content: center;
     align-items: center;
+    clip-path: polygon(
+      50% 0%,
+      100% 25%,
+      100% 75%,
+      50% 100%,
+      0% 75%,
+      0% 25%
+    );
 }
 
 .bug {
@@ -37,22 +67,5 @@
     font-size: 1.1em;
     padding: 6px;
     border-radius: 6px;
-    background-color: #ddd;
-    color: #000;
     text-transform: uppercase;
-}
-
-.bug-white {
-    background-color: #f0f0f0;
-    color: #000;
-}
-
-.bug-black {
-    background-color: #333;
-    color: #fff;
-}
-
-.stack-count {
-    font-size: 0.75em;
-    margin-left: 4px;
 }

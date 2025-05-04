@@ -40,12 +40,18 @@ const Cell: React.FC<CellProps> = ({
     >
       <div className="hex">
         {topBug ? (
-          <div className={`bug bug-${topBug.owner.toLowerCase()}`}>
+          <div
+            className={`bug`}
+            style={{
+              backgroundColor: topBug.owner === 'BLACK' ? '#333' : '#fff',
+              color: topBug.owner === 'BLACK' ? '#fff' : '#000',
+            }}
+          >
             {topBug.bug_type[0]}
             {bugs.length > 1 && <span className="stack-count">{bugs.length}</span>}
           </div>
         ) : (
-          <div className="empty"></div>
+          <div className="empty" />
         )}
       </div>
     </div>
