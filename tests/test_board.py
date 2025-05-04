@@ -84,9 +84,9 @@ def test_cannot_place_on_occupied(board, players):
     assert not board.place_bug(bug2, pos)
 
 
-def test_can_place_first_bug_anywhere(board, players):
+def test_can_place_first_bug(board, players):
     white, _ = players
-    pos = Position(3, -3)
+    pos = Position(0, 0)
     assert board.can_place_bug(white, pos)
 
 
@@ -216,3 +216,45 @@ def test_can_move_bug_and_move_bug(board, players):
 
     assert board.get_top_bug(p3) == white_bug
     assert not board.is_occupied(p2)
+
+
+def test_get_valid_placement_positions_initial(board, players):
+    white, _ = players
+    assert board.get_valid_placement_positions(white) == {Position(0, 0)}
+
+
+def test_get_valid_placement_positions_second_bug(board, players):
+    white, black = players
+    pos = Position(0, 0)
+    queen = Bug(BugType.QUEEN_BEE, black)
+    assert board.place_bug(queen, pos)
+
+    expected = set(pos.neighbors())
+    result = board.get_valid_placement_positions(white)
+    assert result == expected
+
+
+def test_get_valid_placement_positions_own_neighbors_only(board, players):
+    white, black = players
+    center = Position(0, 0)
+    east = Position(1, 0)
+    west = Position(-1, 0)
+
+    white_q = Bug(BugType.QUEEN_BEE, white)
+    black_q = Bug(BugType.QUEEN_BEE, black)
+    white_ant = Bug(BugType.ANT, white)
+
+    assert board.place_bug(white_q, center)
+    assert board.place_bug(black_q, east)
+    assert board.place_bug(white_ant, west)
+
+    legal = board.get_valid_placement_positions(white)
+
+    nw = Position(0, -1)
+    sw = Position(-1, 1)
+    left_w = Position(-2, 0)
+    left_nw = Position(-1, -1)
+    left_sw = Position(-2, 1)
+    expected = {nw, left_nw, left_w, left_sw, sw}
+
+    assert legal == expected

@@ -29,7 +29,7 @@ class Board:
     def _drop_bug(self, bug: Bug, position: Position) -> None:
         """Unconditionally places a bug on the stack at the given position."""
         bug.position = position
-        bug.on_top = len(self._grid[position])
+        bug.height = len(self._grid[position])
         self._grid[position].append(bug)
 
     def get_stack(self, position: Position) -> list[Bug]:
@@ -53,63 +53,116 @@ class Board:
         """Returns all positions that have at least one bug."""
         return (pos for pos, stack in self._grid.items() if stack)
 
-    def can_place_bug(self, player: Player, position: Position) -> bool:
+    def get_valid_positions(self, player: Player) -> set[Position]:
         """
-        Checks whether a bug can be placed at the given position.
-
-        Conditions: The tile is empty, bug must touch at least one of their own bugs,
-        bug may not touch opponent's bugs. Note, a stack takes the color of the bug on top.
-
-        Exceptions: The first bug placed will not touch anything, and
-        the second bug placed will touch the first bug of the opponent.
+        Returns a set of legal positions where the player can place any bug from reserve.
 
         Args:
             player (Player): The player attempting to place the bug.
-            position (Position): The position where the bug is to be placed.
+
+        Returns:
+            set[Position]: Legal placement tiles based on placement rules.
+        """
+        occupied = list(self.occupied_positions())
+
+        # First bug placed (board unoccupied)
+        # Allow isolated placement at (0, 0)
+        if not occupied:
+            return {Position(0, 0)}
+
+        # Second bug placed (one occupied pos and stack height is 1)
+        # Must touch the opponent's first bug
+        if len(occupied) == 1:
+            only_pos = occupied[0]
+            if len(self.get_stack(only_pos)) == 1:
+                return set(only_pos.neighbors())
+
+        # Normal case: Must touch own bug(s) only
+        positions = set()
+        seen = set()
+        for bug in player.placed:
+            # bug must be on top of the stack
+            if bug.height != len(self.get_stack(bug.position)) - 1:
+                continue
+
+            for pos in bug.position.neighbors():
+                # Skip if occupied or already seen
+                if self.is_occupied(pos) or pos in seen:
+                    continue
+                seen.add(pos)
+                # Get the top bug from each occupied neighboring position
+                nbor_bugs = [self.get_top_bug(n) for n in pos.neighbors() if self.is_occupied(n)]
+
+                # Must have neighbors, and all of them must belong to the player
+                if nbor_bugs and all(b.owner == player for b in nbor_bugs if b is not None):
+                    positions.add(pos)
+
+        return positions
+
+    def can_place_bug(self, player: Player, pos: Position,
+                      valid_pos: set[Position] | None = None) -> bool:
+        """
+        Checks whether a bug can be placed at the given position.
+
+        Conditions: The tile is empty, bug must touch only their own bugs,
+        some exceptions at start. Note, a stack takes the color of the bug on top.
+
+        Args:
+            player (Player): The player attempting to place the bug.
+            pos (Position): The position where the bug is to be placed.
+            valid_pos (set[Position] | None): Optional precomputed legal placement positions.
 
         Returns:
             bool: True if the bug can be legally placed, False otherwise.
         """
-        if self.is_occupied(position):
+        if valid_pos is not None:
+            return pos in valid_pos
+
+        if self.is_occupied(pos):
             return False
 
-        # First bug placed: allow isolated placement
-        # Checks if board is fully unoccupied
-        if not any(self.occupied_positions()):
-            return True
+        occupied = list(self.occupied_positions())
 
+        # First bug placed (board unoccupied)
+        # Allow isolated placement at (0, 0)
+        if not occupied:
+            return Position(0, 0) == pos
+
+        # Second bug placed (one occupied pos and stack height is 1)
+        # Must touch the opponent's first bug
+        if len(occupied) == 1 and len(self.get_stack(occupied[0])) == 1:
+            return pos in occupied[0].neighbors()
+
+        # Normal case: Must touch own bug(s) only
         # Get the top bug from each occupied neighboring position
-        neighbor_bugs = [
-            self.get_top_bug(nbor)
-            for nbor in position.neighbors() if self.is_occupied(nbor)
-        ]
+        nbor_bugs = [self.get_top_bug(n) for n in pos.neighbors() if self.is_occupied(n)]
 
-        # Second bug placed: must touch the opponent's first bug
-        # Return checks if at least one neighboring bug belongs to the opponent
-        if len(list(self.occupied_positions())) == 1:
-            return any(b.owner != player for b in neighbor_bugs if b is not None)
-
-        if not neighbor_bugs:
+        # Must have at least one neighbor
+        if not nbor_bugs:
             return False
 
-        # Checks if all neighboring bugs belong to the same player
-        return all(b.owner == player for b in neighbor_bugs if b is not None)
+        # Check if all neighboring bugs belong to player
+        return all(b.owner == player for b in nbor_bugs if b is not None)
 
-    def place_bug(self, bug: Bug, position: Position) -> bool:
+    def place_bug(self, bug: Bug, pos: Position, valid_pos: set[Position] | None = None) -> bool:
         """
         Attempts to place a bug at a given position on the board.
 
         Args:
             bug (Bug): The bug to place.
-            position (Position): The target position to place the bug.
+            pos (Position): The target position to place the bug.
+            valid_pos (set[Position] | None): Optional precomputed legal placement positions.
 
         Returns:
             bool: True if the bug was successfully placed, False otherwise.
         """
-        if not self.can_place_bug(bug.owner, position):
+        player = bug.owner
+        if not self.can_place_bug(player, pos, valid_pos):
             return False
 
-        self._drop_bug(bug, position)
+        self._drop_bug(bug, pos)
+        player.remove_from_reserve(bug.bug_type)
+        player.add_to_placed(bug)
         return True
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:

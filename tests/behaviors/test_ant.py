@@ -91,11 +91,11 @@ def test_ant_behavior_no_moves_if_breaks_hive(board, players):
     west = Position(-1, 0)
 
     # queen1 (b) - ant (w) - quee2 (w)
-    queen1 = Bug(BugType.QUEEN_BEE, black)
     ant = Bug(BugType.ANT, white)
+    queen1 = Bug(BugType.QUEEN_BEE, black)
     queen2 = Bug(BugType.QUEEN_BEE, white)
-    assert board.place_bug(queen1, west)
     assert board.place_bug(ant, center)
+    assert board.place_bug(queen1, west)
     assert board.place_bug(queen2, east)
 
     behavior = get_behavior_for(BugType.ANT)
