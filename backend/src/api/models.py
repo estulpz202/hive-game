@@ -45,6 +45,11 @@ class GameStateResponse(BaseModel):
             bugs=bugs,
         )
 
+class PositionView(BaseModel):
+    """JSON view model for q/r coordinate for valid placements or movements."""
+    q: int
+    r: int
+
 # Request DTO (Data Transfer Object) is a structured object that defines the data a client must
 # send when calling endpoints. It separates incoming data from internal logic.
 
