@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        // ECMAScript target
+        "target": "ES6",
+
+        // Include DOM and modern JavaScript libraries
+        "lib": ["dom", "dom.iterable", "esnext"],
+
+        // Allow JavaScript files and enable module interop
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+
+        // Enable strict type-checking and safety features
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+
+        // Module resolution settings
+        "module": "ES6",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+
+        // React JSX and transpile configuration
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx"
+    },
+    "include": ["src"]
+}
