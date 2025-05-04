@@ -70,6 +70,20 @@ class Game:
 
         return False
 
+    def get_winner(self) -> str | None:
+        """Returns the color of the winning player or 'Draw'."""
+        if self.phase != Phase.GAME_OVER:
+            return None
+
+        if self.draw:
+            return "Draw"
+        elif self.winner == self.player_black:
+            return "Black"
+        elif self.winner == self.player_white:
+            return "White"
+
+        return None
+
     def switch_turn(self) -> None:
         """Switches to the next player's turn and checks for game end conditions."""
         if self.phase == Phase.GAME_OVER:

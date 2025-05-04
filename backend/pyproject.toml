@@ -51,4 +51,5 @@ lint.ignore = [
   "D413",   # allow no blank line after "Returns" section
   "D100",   # allow no docstring in public module
   "D401",   # allows docstring to not be in imperative mood
+  "PLW0603" # allows using global to update global vars
 ]
