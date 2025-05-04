@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameState, Bug, PlayerState, Position } from './game';
+import { GameState, Position } from './game';
 import Board from './components/Board';
 import BugPicker from './components/BugPicker';
 import GameOverBanner from './components/GameOverBanner';
@@ -45,6 +45,7 @@ class App extends React.Component<Props, AppState> {
       players: [],
       can_pass: false,
       winner: null,
+      visible_positions: [],
       selectedReserveBug: null,
       selectedBoardPos: null,
       validPlacements: [],
@@ -93,6 +94,7 @@ class App extends React.Component<Props, AppState> {
       players: data.players,
       can_pass: data.can_pass,
       winner: data.winner,
+      visible_positions: data.visible_positions,
       selectedReserveBug: preserveSelection ? this.state.selectedReserveBug : null,
       selectedBoardPos: preserveSelection ? this.state.selectedBoardPos : null,
       validPlacements: [],
@@ -106,6 +108,16 @@ class App extends React.Component<Props, AppState> {
    * Triggers a request to fetch valid placements.
    */
   handleReserveBugSelect = async (bugType: string) => {
+    // Deselect if clicking again on the selected bug
+    if (this.state.selectedReserveBug === bugType) {
+      this.setState({
+        selectedReserveBug: null,
+        selectedBoardPos: null,
+        validPlacements: [],
+      });
+      return;
+    }
+    
     this.setState({ selectedReserveBug: bugType, selectedBoardPos: null });
     try {
       const response = await fetch('/valid-placements');
@@ -239,6 +251,7 @@ class App extends React.Component<Props, AppState> {
       selectedReserveBug,
       can_pass,
       winner,
+      visible_positions,
     } = this.state;
   
     const playerState = players.find(p => p.color === current_player) || null;
@@ -278,6 +291,7 @@ class App extends React.Component<Props, AppState> {
         <div className="board-wrapper">
           <Board
             bugs={bugs}
+            visiblePositions={visible_positions}
             onBoardCellClick={this.handleBoardCellClick}
             validPlacements={validPlacements}
             validMovesForSelecPos={validMovesForSelecPos}

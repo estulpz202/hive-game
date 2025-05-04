@@ -34,5 +34,6 @@ export interface Bug {
     players: PlayerState[];
     can_pass: boolean;
     winner: string | null;
+    visible_positions: Position[];
   }
   

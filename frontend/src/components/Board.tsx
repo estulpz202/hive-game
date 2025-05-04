@@ -6,6 +6,7 @@ import '../styles/Board.css';
 /** Props expected by the Board component */
 interface BoardProps {
   bugs: Bug[];
+  visiblePositions: Position[];
   validPlacements: Position[];
   validMovesForSelecPos: Position[];
   selectedBoardPos: Position | null;
@@ -22,6 +23,7 @@ const posKey = (q: number, r: number) => `${q},${r}`;
  */
 const Board: React.FC<BoardProps> = ({
   bugs,
+  visiblePositions,
   validPlacements,
   validMovesForSelecPos,
   selectedBoardPos,
@@ -30,14 +32,14 @@ const Board: React.FC<BoardProps> = ({
   // Determine all positions we want to render a cell for.
   const cellsToRender = new Map<string, Position>();
 
-  // Add all bug positions
-  for (const bug of bugs) {
-    cellsToRender.set(posKey(bug.q, bug.r), { q: bug.q, r: bug.r });
+  // Add all visible positions
+  for (const pos of visiblePositions) {
+    cellsToRender.set(`${pos.q},${pos.r}`, pos);
   }
 
-  // Add all valid placement and move options
-  for (const pos of [...validPlacements, ...validMovesForSelecPos]) {
-    cellsToRender.set(posKey(pos.q, pos.r), pos);
+  // Make baord visible at start
+  if (cellsToRender.size === 0) {
+    cellsToRender.set(posKey(0, 0), { q: 0, r: 0 });
   }
 
   // Sort cells by q and then r for stable layout
