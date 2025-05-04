@@ -218,23 +218,23 @@ def test_can_move_bug_and_move_bug(board, players):
     assert not board.is_occupied(p2)
 
 
-def test_get_valid_positions_initial(board, players):
+def test_get_all_valid_positions_initial(board, players):
     white, _ = players
-    assert board.get_valid_positions(white) == {Position(0, 0)}
+    assert board.get_all_valid_positions(white) == {Position(0, 0)}
 
 
-def test_get_valid_positions_second_bug(board, players):
+def test_get_all_valid_positions_second_bug(board, players):
     white, black = players
     pos = Position(0, 0)
     queen = Bug(BugType.QUEEN_BEE, black)
     assert board.place_bug(queen, pos)
 
     expected = set(pos.neighbors())
-    result = board.get_valid_positions(white)
+    result = board.get_all_valid_positions(white)
     assert result == expected
 
 
-def test_get_valid_positions_own_neighbors_only(board, players):
+def test_get_all_valid_positions_own_neighbors_only(board, players):
     white, black = players
     center = Position(0, 0)
     east = Position(1, 0)
@@ -248,7 +248,7 @@ def test_get_valid_positions_own_neighbors_only(board, players):
     assert board.place_bug(black_q, east)
     assert board.place_bug(white_ant, west)
 
-    legal = board.get_valid_positions(white)
+    legal = board.get_all_valid_positions(white)
 
     nw = Position(0, -1)
     sw = Position(-1, 1)
@@ -258,3 +258,53 @@ def test_get_valid_positions_own_neighbors_only(board, players):
     expected = {nw, left_nw, left_w, left_sw, sw}
 
     assert legal == expected
+
+
+def test_get_all_valid_moves_requires_queen(board, players):
+    white, _ = players
+    bug = Bug(BugType.ANT, white)
+    assert board.place_bug(bug, Position(0, 0))
+    
+    # Queen not placed yet
+    assert board.get_all_valid_moves(white) == {}
+
+
+def test_get_all_valid_moves_skips_bugs_not_on_top(board, players):
+    white, _ = players
+    queen = Bug(BugType.QUEEN_BEE, white)
+    ant = Bug(BugType.ANT, white)
+    assert board.place_bug(queen, Position(0, 0))
+    board._drop_bug(ant, Position(0, 0))  # Now queen is covered
+    assert white.has_placed_queen
+    assert white.queen_bug == queen
+
+    # Covered bug (queen) should not have any moves
+    moves = board.get_all_valid_moves(white)
+    assert queen not in moves
+    assert ant in moves
+
+
+def test_get_all_valid_moves_returns_correct_structure(board, players):
+    white, black = players
+    queen = Bug(BugType.QUEEN_BEE, white)
+    enemy = Bug(BugType.QUEEN_BEE, black)
+
+    pos1 = Position(0, 0)
+    pos2 = Position(1, 0)
+
+    # Drop both bugs directly (bypasses validation but simulates state)
+    assert board.place_bug(queen, pos1)
+    board._drop_bug(enemy, pos2)
+
+    # At this point, queen is placed and on top
+    assert white.queen_bug == queen
+    assert white.has_placed_queen
+
+    moves = board.get_all_valid_moves(white)
+    print(moves)
+
+    assert isinstance(moves, dict)
+    assert queen in moves
+    assert isinstance(moves[queen], list)
+    assert all(isinstance(p, Position) for p in moves[queen])
+    assert set([Position(1,-1), Position(0,1)]) == set(moves[queen])

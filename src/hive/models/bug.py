@@ -7,7 +7,7 @@ from hive.models.position import Position
 
 # @dataclass is used to automatically generate special methods.
 # Like __init__, __repr__, and __eq__ for the Bug class.
-@dataclass
+@dataclass(eq=False, unsafe_hash=True)
 class Bug:
     """
     Represents a single bug token on the board.

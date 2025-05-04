@@ -32,6 +32,11 @@ class Board:
         bug.height = len(self._grid[position])
         self._grid[position].append(bug)
 
+        # Update the player's reserve and placed bugs
+        player = bug.owner
+        player.remove_from_reserve(bug.bug_type)
+        player.add_to_placed(bug)
+
     def get_stack(self, position: Position) -> list[Bug]:
         """Returns the bug stack at a given position."""
         return self._grid.get(position, [])
@@ -53,7 +58,7 @@ class Board:
         """Returns all positions that have at least one bug."""
         return (pos for pos, stack in self._grid.items() if stack)
 
-    def get_valid_positions(self, player: Player) -> set[Position]:
+    def get_all_valid_positions(self, player: Player) -> set[Position]:
         """
         Returns a set of legal positions where the player can place any bug from reserve.
 
@@ -157,13 +162,10 @@ class Board:
         Returns:
             bool: True if the bug was successfully placed, False otherwise.
         """
-        player = bug.owner
-        if not self.can_place_bug(player, pos, valid_positions):
+        if not self.can_place_bug(bug.owner, pos, valid_positions):
             return False
 
         self._drop_bug(bug, pos)
-        player.remove_from_reserve(bug.bug_type)
-        player.add_to_placed(bug)
         return True
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
@@ -299,7 +301,36 @@ class Board:
         # Buc can climb is allowed if fewer than 2 taller blockers exist
         return taller_blockers < NUM_BLOCKERS_FOM
 
-    def can_move_bug(self, bug: Bug, to_pos: Position) -> bool:
+    def get_all_valid_moves(self, player: Player) -> dict[Bug, list[Position]]:
+        """
+        Returns a dictionary of player's movable bugs and their legal destination positions.
+
+        Args:
+            player (Player): The current player.
+
+        Returns:
+            dict[Bug, list[Position]]: Map from bug to valid move positions.
+        """
+        # Check if the player has placed their queen
+        if not player.has_placed_queen:
+            return {}
+
+        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
+        moves = {}
+        for bug in player.placed:
+            # Skip if bug not on top
+            if self.get_top_bug(bug.position) != bug:
+                continue
+
+            behavior = get_behavior_for(bug.bug_type)
+            valid = behavior.get_valid_moves(bug, self)
+            if valid:
+                moves[bug] = valid
+
+        return moves
+
+    def can_move_bug(self, bug: Bug, to_pos: Position,
+                     valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
         Determines if the given bug can legally move to the specified position.
 
@@ -309,11 +340,13 @@ class Board:
         Args:
             bug (Bug): The bug attempting to move.
             to_pos (Position): The target position for the bug.
+            valid_moves (dict[Bug, list[Position]] | None): Optional precomputed valid moves.
 
         Returns:
             bool: True if the bug can legally move to the target position, False otherwise.
         """
-        from hive.behaviors import get_behavior_for  # Lazy import to avoid circular dependency
+        if valid_moves is not None:
+            return to_pos in valid_moves.get(bug, [])
 
         if bug.position == to_pos:
             return False
@@ -328,24 +361,27 @@ class Board:
             return False
 
         # Check bug specific movement rules and FOM via behavior strategy
+        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
         behavior = get_behavior_for(bug.bug_type)
         if to_pos not in behavior.get_valid_moves(bug, self):
             return False
 
         return True
 
-    def move_bug(self, bug: Bug, to_pos: Position) -> bool:
+    def move_bug(self, bug: Bug, to_pos: Position,
+                 valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
         Moves a bug to a new position if the move is legal.
 
         Args:
             bug (Bug): The bug to move.
             to_pos (Position): The target position for the bug.
+            valid_moves (dict[Bug, list[Position]] | None): Optional precomputed valid moves.
 
         Returns:
             bool: True if the bug was moved successfully, False otherwise.
         """
-        if not self.can_move_bug(bug, to_pos):
+        if not self.can_move_bug(bug, to_pos, valid_moves):
             return False
 
         self.remove_top_bug(bug.position)

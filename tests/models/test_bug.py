@@ -27,14 +27,17 @@ def test_bug_position_and_height_mutability():
     assert bug.height == 1
 
 
-def test_bug_equality_based_on_fields():
+def test_bug_identity_not_field_equality():
     player = Player("WHITE")
     pos = Position(1, -1)
 
     bug1 = Bug(BugType.SPIDER, player, pos, height=0)
     bug2 = Bug(BugType.SPIDER, player, Position(1, -1), height=0)
 
-    assert bug1 == bug2
+    assert bug1 is not bug2  # identity check
+    assert bug1 != bug2      # not equal
+    assert bug1 is bug1      # identity check
+    assert bug1 == bug1      # equal to itself
 
 
 def test_bug_position_can_be_set_later():
