@@ -100,7 +100,7 @@ class Board:
         return positions
 
     def can_place_bug(self, player: Player, pos: Position,
-                      valid_pos: set[Position] | None = None) -> bool:
+                      valid_positions: set[Position] | None = None) -> bool:
         """
         Checks whether a bug can be placed at the given position.
 
@@ -110,13 +110,13 @@ class Board:
         Args:
             player (Player): The player attempting to place the bug.
             pos (Position): The position where the bug is to be placed.
-            valid_pos (set[Position] | None): Optional precomputed legal placement positions.
+            valid_positions (set[Position] | None): Optional precomputed legal positions.
 
         Returns:
             bool: True if the bug can be legally placed, False otherwise.
         """
-        if valid_pos is not None:
-            return pos in valid_pos
+        if valid_positions is not None:
+            return pos in valid_positions
 
         if self.is_occupied(pos):
             return False
@@ -144,20 +144,21 @@ class Board:
         # Check if all neighboring bugs belong to player
         return all(b.owner == player for b in nbor_bugs if b is not None)
 
-    def place_bug(self, bug: Bug, pos: Position, valid_pos: set[Position] | None = None) -> bool:
+    def place_bug(self, bug: Bug, pos: Position,
+                  valid_positions: set[Position] | None = None) -> bool:
         """
         Attempts to place a bug at a given position on the board.
 
         Args:
             bug (Bug): The bug to place.
             pos (Position): The target position to place the bug.
-            valid_pos (set[Position] | None): Optional precomputed legal placement positions.
+            valid_positions (set[Position] | None): Optional precomputed legal positions.
 
         Returns:
             bool: True if the bug was successfully placed, False otherwise.
         """
         player = bug.owner
-        if not self.can_place_bug(player, pos, valid_pos):
+        if not self.can_place_bug(player, pos, valid_positions):
             return False
 
         self._drop_bug(bug, pos)

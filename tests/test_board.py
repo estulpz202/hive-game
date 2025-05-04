@@ -218,23 +218,23 @@ def test_can_move_bug_and_move_bug(board, players):
     assert not board.is_occupied(p2)
 
 
-def test_get_valid_placement_positions_initial(board, players):
+def test_get_valid_positions_initial(board, players):
     white, _ = players
-    assert board.get_valid_placement_positions(white) == {Position(0, 0)}
+    assert board.get_valid_positions(white) == {Position(0, 0)}
 
 
-def test_get_valid_placement_positions_second_bug(board, players):
+def test_get_valid_positions_second_bug(board, players):
     white, black = players
     pos = Position(0, 0)
     queen = Bug(BugType.QUEEN_BEE, black)
     assert board.place_bug(queen, pos)
 
     expected = set(pos.neighbors())
-    result = board.get_valid_placement_positions(white)
+    result = board.get_valid_positions(white)
     assert result == expected
 
 
-def test_get_valid_placement_positions_own_neighbors_only(board, players):
+def test_get_valid_positions_own_neighbors_only(board, players):
     white, black = players
     center = Position(0, 0)
     east = Position(1, 0)
@@ -248,7 +248,7 @@ def test_get_valid_placement_positions_own_neighbors_only(board, players):
     assert board.place_bug(black_q, east)
     assert board.place_bug(white_ant, west)
 
-    legal = board.get_valid_placement_positions(white)
+    legal = board.get_valid_positions(white)
 
     nw = Position(0, -1)
     sw = Position(-1, 1)
