@@ -156,7 +156,6 @@ def test_can_slide_to(board, players):
 
     assert not board.can_slide_to(p1, p4)  # p4 is not adjacent to p1
     assert not board.can_slide_to(p1, p5)  # p5 not adjacent to p1 and not OHR
-    assert not board.can_slide_to(p1, p2)  # p2 occupied
 
 
 def test_is_one_hive_move_and_dest_is_connected(board, players):

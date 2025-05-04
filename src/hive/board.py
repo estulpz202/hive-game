@@ -118,7 +118,11 @@ class Board:
 
     def dest_is_connected(self, from_pos: Position, to_pos: Position) -> bool:
         """Checks if the destination will remain connected to the hive after moving."""
-        # If from_pos stays occupied, safe to just check neighbors of to_pos
+        # If destination is already part of the hive (occupied), it's connected
+        if self.is_occupied(to_pos):
+            return True
+
+        # Else if: from_pos stays occupied, safe to just check neighbors of to_pos
         if len(self.get_stack(from_pos)) > 1:
             return any(self.is_occupied(nbor) for nbor in to_pos.neighbors())
 
@@ -188,8 +192,7 @@ class Board:
         """
         Determines if a bug can slide between two adjacent positions.
 
-        Conditions: Dest must be unoccupied, both positions must be adjacent, and
-        Freedom of Movement (need one free shared neighbor to allow sliding, no tight gap).
+        Conditions: Both positions must be adjacent and follows FOM rule.
 
         Args:
             from_pos (Position): The bug's current position.
@@ -198,9 +201,6 @@ class Board:
         Returns:
             bool: True if the bug can legally slide to the destination, False otherwise.
         """
-        if self.is_occupied(to_pos):
-            return False
-
         if to_pos not in from_pos.neighbors():
             return False
 
@@ -211,6 +211,43 @@ class Board:
 
         # Bug can slide if fewer than 2 adjacent tiles block the gap
         return blocked_sides < NUM_BLOCKERS_FOM
+
+    def can_climb_to(self, from_pos: Position, to_pos: Position) -> bool:
+        """
+        Determines if a bug can legally climb between two adjacent stacks.
+
+        Conditions: Both positions must be adjacent and follows FOM rule,
+        uses can_slide if same level, otherwise checks if both neighbors taller.
+
+        Args:
+            from_pos (Position): Current position of the beetle.
+            to_pos (Position): Target adjacent position.
+
+        Returns:
+            bool: True if climbing is allowed, False otherwise.
+        """
+        if to_pos not in from_pos.neighbors():
+            return False
+
+        # Subtract 1 since bug is being moved, so doesn't count towards height
+        from_height = len(self.get_stack(from_pos)) - 1
+        to_height = len(self.get_stack(to_pos))
+
+        # If heights are equal, treat as a slide (must obey slide FOM)
+        if from_height == to_height:
+            return self.can_slide_to(from_pos, to_pos)
+
+        # Get neighbors shared by both from and to positions
+        shared_neighbors = set(from_pos.neighbors()) & set(to_pos.neighbors())
+
+        # Count shared neighbors that are taller than both from and to stacks
+        taller_blockers = sum(
+            1 for nbor in shared_neighbors
+            if len(self.get_stack(nbor)) > from_height and len(self.get_stack(nbor)) > to_height
+        )
+
+        # Buc can climb is allowed if fewer than 2 taller blockers exist
+        return taller_blockers < NUM_BLOCKERS_FOM
 
     def can_move_bug(self, bug: Bug, to_pos: Position) -> bool:
         """
