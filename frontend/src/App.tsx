@@ -234,9 +234,6 @@ class App extends React.Component<Props, AppState> {
         <div className="info-panel">
           <p><strong>Player:</strong> {current_player || '—'}</p>
           <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
-          {winner && phase === 'GameOver' && (
-            <p><strong>Result:</strong> {winner === 'Draw' ? 'Draw' : `${winner} wins!`}</p>
-          )}
         </div>
 
         <div className="controls">

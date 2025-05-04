@@ -1,24 +1,33 @@
 import React from 'react';
 import '../styles/GameOverBanner.css';
 
-/** Props expected by the GameOverBanner component */
+/**
+ * Props for GameOverBanner component.
+ * 
+ * - winner: the name of the winning player or 'Draw' if no winner.
+ * - onRestart: callback to restart the game.
+ */
 interface GameOverBannerProps {
   winner: string;
   onRestart: () => void;
 }
 
 /**
- * Displays the result of the game and a button to restart.
+ * GameOverBanner renders a fullscreen overlay when the Hive game ends,
+ * showing the winner (Black or White) or a draw, with a button to restart.
  */
 const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart }) => {
-  const resultText =
-    winner === 'Draw' ? 'The game is a draw!' : `${winner} wins the game!`;
 
   return (
-    <div className="game-over-banner">
-      <h2>Game Over</h2>
-      <p>{resultText}</p>
-      <button onClick={onRestart}>Start New Game</button>
+    <div className="overlay">
+      <div className="banner">
+        <div className="text">
+          🐝 <span style={{ color: '#ffffff' }}>{winner === 'Draw' ? 'Game Ends in a Draw!' : `${winner} Wins!`}</span> 🐝
+        </div>
+        <button className="button" onClick={onRestart}>
+          🔄 New Hive Game
+        </button>
+      </div>
     </div>
   );
 };
