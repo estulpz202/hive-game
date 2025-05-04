@@ -1,8 +1,18 @@
+"""Entrypoint for the FastAPI Hive backend server."""
 from fastapi import FastAPI  # type: ignore
 
-app = FastAPI()
+from api.router import api_router
 
-@app.get("/health")
-def health_check():
-    """Health check endpoint to verify if the API is running."""
-    return {"status": "ok"}
+# Create the FastAPI app instance
+app = FastAPI(
+    title="Hive Game API",
+    description="API for interacting with the Hive board game backend",
+    version="0.1.0",
+)
+
+# Registers all routes
+app.include_router(api_router)
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to the Hive API!"}
