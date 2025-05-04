@@ -31,14 +31,24 @@ make run
 ### Set Up Frontend
 
 ```bash
-# To be addded
+# Open a new terminal and enter frontend folder
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run the frontend server (http://localhost:3000)
+npm start
 ```
 
 > Note: Both the frontend and backend must be running simultaneously for the game to function properly.
 
-## 🎮 How to Play (Interface Instructions)
+## 🎮 How to Play
 
-To be addded
+- Launch the frontend in your browser (localhost:3000)
+- Each player selects a bug to place or move according to the rules of Hive
+- Valid actions are visually indicated
+- The game ends automatically when a Queen Bee is surrounded
 
 ## 👤 Author
 
