@@ -13,10 +13,10 @@ interface Props {}
  * and additional frontend-only state for UI interactions.
  */
 interface AppState extends GameState {
-  selectedBug: string | null;
-  selectedPosition: Position | null;
+  selectedReserveBug: string | null;
+  selectedBoardPos: Position | null;
   validPlacements: Position[];
-  validMoves: Position[];
+  validMovesForSelecPos: Position[];
   errorMessage: string | null;
 }
 
@@ -45,10 +45,10 @@ class App extends React.Component<Props, AppState> {
       players: [],
       can_pass: false,
       winner: null,
-      selectedBug: null,
-      selectedPosition: null,
+      selectedReserveBug: null,
+      selectedBoardPos: null,
       validPlacements: [],
-      validMoves: [],
+      validMovesForSelecPos: [],
       errorMessage: null,
     };
   }
@@ -93,10 +93,10 @@ class App extends React.Component<Props, AppState> {
       players: data.players,
       can_pass: data.can_pass,
       winner: data.winner,
-      selectedBug: preserveSelection ? this.state.selectedBug : null,
-      selectedPosition: preserveSelection ? this.state.selectedPosition : null,
+      selectedReserveBug: preserveSelection ? this.state.selectedReserveBug : null,
+      selectedBoardPos: preserveSelection ? this.state.selectedBoardPos : null,
       validPlacements: [],
-      validMoves: [],
+      validMovesForSelecPos: [],
       errorMessage: null,
     });
   };
@@ -105,8 +105,8 @@ class App extends React.Component<Props, AppState> {
    * Called when a bug is selected from the reserve.
    * Triggers a request to fetch valid placements.
    */
-  handleBugSelect = async (bugType: string) => {
-    this.setState({ selectedBug: bugType, selectedPosition: null });
+  handleReserveBugSelect = async (bugType: string) => {
+    this.setState({ selectedReserveBug: bugType, selectedBoardPos: null });
     try {
       const response = await fetch('/valid-placements');
       const data: Position[] = await response.json();
@@ -118,18 +118,18 @@ class App extends React.Component<Props, AppState> {
   };
 
   /**
-   * Called when a cell is clicked.
+   * Called when a cell on the board is clicked.
    * Decides whether to attempt placement or movement.
    */
-  handleCellClick = (q: number, r: number) => {
-    const { selectedBug, selectedPosition } = this.state;
+  handleBoardCellClick = (q: number, r: number) => {
+    const { selectedReserveBug, selectedBoardPos } = this.state;
 
-    if (selectedBug) {
+    if (selectedReserveBug) {
       this.placeBug(q, r);
-    } else if (!selectedPosition) {
+    } else if (!selectedBoardPos) {
       this.fetchValidMoves(q, r);
     } else {
-      this.moveBug(selectedPosition, { q, r });
+      this.moveBug(selectedBoardPos, { q, r });
     }
   };
 
@@ -137,14 +137,14 @@ class App extends React.Component<Props, AppState> {
    * Sends a request to place a selected bug at a target position.
    */
   placeBug = async (q: number, r: number) => {
-    const { selectedBug } = this.state;
-    if (!selectedBug) return;
+    const { selectedReserveBug } = this.state;
+    if (!selectedReserveBug) return;
 
     try {
       const response = await fetch('/place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bug_type: selectedBug, q, r }),
+        body: JSON.stringify({ bug_type: selectedReserveBug, q, r }),
       });
       const data = await response.json();
       this.updateGameState(data);
@@ -162,8 +162,8 @@ class App extends React.Component<Props, AppState> {
       const response = await fetch(`/valid-moves?q=${q}&r=${r}`);
       const data: Position[] = await response.json();
       this.setState({
-        selectedPosition: { q, r },
-        validMoves: data,
+        selectedBoardPos: { q, r },
+        validMovesForSelecPos: data,
         errorMessage: null,
       });
     } catch (err) {
@@ -234,55 +234,63 @@ class App extends React.Component<Props, AppState> {
       players,
       bugs,
       validPlacements,
-      validMoves,
-      selectedPosition,
-      selectedBug,
+      validMovesForSelecPos,
+      selectedBoardPos,
+      selectedReserveBug,
       can_pass,
       winner,
     } = this.state;
-
-    const playerState = players.find(p => p.color === current_player);
-    const otherPlayer = players.find(p => p.color !== current_player);
-
+  
+    const playerState = players.find(p => p.color === current_player) || null;
+  
     return (
       <div className="App">
         <h1>Hive</h1>
-        <p>
-          <strong>Current Player:</strong> {current_player}
-        </p>
-        <p>
-          <strong>Phase:</strong> {phase}
-        </p>
-
+  
+        <div className="info-panel">
+          <p><strong>Current Player:</strong> {current_player || '—'}</p>
+          <p><strong>Phase:</strong> {phase}</p>
+          {winner && phase === 'GameOver' && (
+            <p><strong>Result:</strong> {winner === 'Draw' ? 'Draw' : `${winner} wins!`}</p>
+          )}
+        </div>
+  
         <div className="controls">
           <button onClick={this.newGame}>New Game</button>
           {can_pass && <button onClick={this.handlePass}>Pass</button>}
         </div>
-
+  
         {this.renderError()}
-
-        <BugPicker
-          playerState={playerState}
-          selectedBug={selectedBug}
-          onSelect={bug => this.setState({ selectedBug: bug, selectedPosition: null })}
-        />
-
+  
+        {/* Always render both reserves, current player can select */}
+        <div className="bug-pickers">
+          {players.map((p) => (
+            <BugPicker
+              key={p.color}
+              playerState={p}
+              selectedReserveBug={current_player === p.color ? selectedReserveBug : null}
+              onSelect={this.handleReserveBugSelect}
+              isCurrentPlayer={current_player === p.color}
+            />
+          ))}
+        </div>
+  
         <div className="board-wrapper">
           <Board
             bugs={bugs}
-            onCellClick={this.handleCellClick}
+            onBoardCellClick={this.handleBoardCellClick}
             validPlacements={validPlacements}
-            validMoves={validMoves}
-            selected={selectedPosition}
+            validMovesForSelecPos={validMovesForSelecPos}
+            selectedBoardPos={selectedBoardPos}
           />
         </div>
-
+  
         {phase === 'GameOver' && (
-          <GameOverBanner winner={this.state.winner || 'Unknown'} onRestart={this.newGame} />
+          <GameOverBanner winner={winner || 'Unknown'} onRestart={this.newGame} />
         )}
       </div>
     );
-  }
+  }  
 }
 
 export default App;
