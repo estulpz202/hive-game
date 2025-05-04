@@ -207,9 +207,11 @@ class App extends React.Component<Props, AppState> {
       case 'GameOver':
         return 'Start a new game to play again.';
       default:
-        return '';
+        return '-';
     }
   };
+
+  displayName = (color: string): string => color.charAt(0) + color.slice(1).toLowerCase();
 
   render(): React.ReactNode {
     const {
@@ -232,7 +234,7 @@ class App extends React.Component<Props, AppState> {
         <h1>Hive</h1>
 
         <div className="info-panel">
-          <p><strong>Player:</strong> {current_player || '—'}</p>
+          <p><strong>Player:</strong> {this.displayName(current_player)}</p>
           <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
         </div>
 

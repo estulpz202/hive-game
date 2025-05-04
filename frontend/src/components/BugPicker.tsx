@@ -9,6 +9,8 @@ interface BugPickerProps {
   isCurrentPlayer: boolean;
 }
 
+const displayName = (color: string): string => color.charAt(0) + color.slice(1).toLowerCase();
+
 const BugPicker: React.FC<BugPickerProps> = ({
   playerState,
   selectedReserveBug,
@@ -21,7 +23,7 @@ const BugPicker: React.FC<BugPickerProps> = ({
 
   return (
     <div className={`bug-picker ${isCurrentPlayer ? 'current-player' : ''}`}>
-      <h3>{playerState.color}'s Reserve</h3>
+      <h3>{displayName(playerState.color)}'s Reserve</h3>
       <div className="bug-options">
         {sortedBugs.map((bug) => (
           <button
