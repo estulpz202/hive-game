@@ -29,13 +29,12 @@ def test_remove_from_reserve_failure():
     assert player.remove_from_reserve(BugType.ANT) is False
 
 
-def test_add_to_placed_and_has_placed_queen():
+def test_add_to_placed():
     player = Player("white")
     bug = Bug(BugType.QUEEN_BEE, player, Position(0, 0))
     player.add_to_placed(bug)
 
     assert bug in player.placed
-    assert player.has_placed_queen() is True
 
 
 def test_has_not_placed_queen():
@@ -43,4 +42,4 @@ def test_has_not_placed_queen():
     bug = Bug(BugType.SPIDER, player, Position(0, 0))
     player.add_to_placed(bug)
 
-    assert player.has_placed_queen() is False
+    assert player.has_placed_queen is False

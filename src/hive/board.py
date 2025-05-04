@@ -41,10 +41,6 @@ class Board:
         stack = self._grid.get(position, [])
         return stack[-1] if stack else None
 
-    def get_bug_at(self, position: Position) -> Bug | None:
-        """Alias for get_top_bug — returns the bug on top at a position."""
-        return self.get_top_bug(position)
-
     def get_all_bugs(self) -> list[Bug]:
         """Returns a flat list of all bugs on the board."""
         return [bug for stack in self._grid.values() for bug in stack]

@@ -16,6 +16,23 @@ def players():
     return Player("WHITE"), Player("BLACK")
 
 
+def test_drop_bug_assigns_position_and_stack_height(board, players):
+    white, _ = players
+    pos = Position(2, -2)
+
+    bug1 = Bug(BugType.ANT, white)
+    bug2 = Bug(BugType.SPIDER, white)
+
+    board._drop_bug(bug1, pos)
+    board._drop_bug(bug2, pos)
+
+    stack = board.get_stack(pos)
+
+    assert bug1.position == pos
+    assert bug2.position == pos
+    assert stack == [bug1, bug2]
+
+
 def test_place_and_get_top_bug(board, players):
     white, _ = players
     pos = Position(0, 0)
@@ -25,15 +42,13 @@ def test_place_and_get_top_bug(board, players):
     assert board.get_top_bug(pos) == bug
 
 
-def test_get_stack_and_bug_at(board, players):
+def test_get_stack(board, players):
     white, _ = players
     pos = Position(0, 0)
     bug = Bug(BugType.QUEEN_BEE, white, pos)
 
     assert board.place_bug(bug, pos)
-
     assert board.get_stack(pos) == [bug]
-    assert board.get_bug_at(pos) == bug
 
 
 def test_remove_top_bug(board, players):
