@@ -18,3 +18,4 @@ class Bug:
     bug_type: BugType
     owner: Player
     position: Position | None = None # Position is none before its placed
+    height: int = -1 # -1 before its placed, 0 when on ground, >0 when stacked

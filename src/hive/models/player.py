@@ -19,7 +19,7 @@ class Player:
         )
         self.placed: list = []
         self.has_placed_queen: bool = False
-        self.queen_bug = None 
+        self.queen_bug = None
 
     def remove_from_reserve(self, bug_type: BugType) -> bool:
         """
