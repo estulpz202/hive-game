@@ -5,13 +5,11 @@ from hive.models.position import Position
 
 def test_bug_initialization():
     player = Player("WHITE")
-    pos = Position(0, 0)
-    bug = Bug(BugType.QUEEN_BEE, player, pos)
+    bug = Bug(BugType.QUEEN_BEE, player)
 
     assert bug.bug_type == BugType.QUEEN_BEE
     assert bug.owner == player
-    assert bug.position == pos
-    assert bug.on_top == 0
+    assert bug.position == None
 
 
 def test_bug_equality():
@@ -24,15 +22,16 @@ def test_bug_equality():
     assert bug1 == bug2
 
 
-def test_bug_stack_height_changeable():
+def test_bug_pos_changeable():
     player = Player("BLACK")
-    pos = Position(2, 2)
+    pos1 = Position(2, 2)
+    pos2 = Position(3, 3)
 
-    bug = Bug(BugType.SPIDER, player, pos, on_top=1)
+    bug = Bug(BugType.SPIDER, player, pos1)
 
-    assert bug.on_top == 1
-    bug.on_top = 2
-    assert bug.on_top == 2
+    assert bug.position == pos1
+    bug.position = pos2
+    assert bug.position == pos2
 
 
 def test_bug_position_is_mutable():
