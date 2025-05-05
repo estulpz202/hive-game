@@ -17,7 +17,7 @@ const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart }) =>
       <div className="banner">
         {/* Display game result */}
         <div className="text">
-          🐝 <span style={{ color: '#ffffff' }}>
+          🐝 <span>
             {winner === 'Draw' ? 'Game Ends in a Draw!' : `${winner} Wins!`}
           </span> 🐝
         </div>

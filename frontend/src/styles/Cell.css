@@ -2,7 +2,6 @@
 .cell {
     width: 92.5%; /** Create spacing between cells */
     height: 92.5%;
-    background-color: #ffffff;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /** Hexagon shape */
     display: flex;
     justify-content: center;
@@ -20,45 +19,45 @@
 
 /** Styling for an empty cell with no bug */
 .cell.empty {
-    background-color: #ededed;
+    background-color: #ececec; /* Light gray for empty cells, more distinct */
 }
 
 /** Background for black player's bug */
 .cell.black {
-    background-color: #2d2d2d;
+    background-color: #3a2e1f; /* Dark brown for black player's bugs */
 }
 
 /** Background for white player's bug */
 .cell.white {
-    background-color: #e9dece;
+    background-color: #d5c4a3; /* Darker beige for white player's bugs, more contrast */
 }
 
 /** Highlight for valid placement positions */
 .cell.valid-placement {
-    background-color: #a3e4d7;
+    background-color: #afd298; /* Soft green for valid placements */
 }
 
 /** Highlight for valid move targets */
 .cell.valid-move {
-    background-color: #f9e79f;
+    background-color: #afd298; /* Soft green for valid moves */
 }
 
 /** Highlight for currently selected cell */
 .cell.selected {
-    background-color: #3498db;
+    background-color: #d4a017; /* Honey yellow for selected cell */
 }
 
 /** Bug emoji/icon inside a cell */
 .bug-icon {
     line-height: 1;
-    color: inherit;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /** Overlay circle showing stack count when multiple bugs are stacked */
 .stack-count {
     position: absolute;
-    background-color: #e74c3c;
-    color: white;
+    background-color: #d9534f; /* Red for stack count background */
+    color: #fff;
     border-radius: 50%; /** Make it a circle */
     display: flex;
     justify-content: center;
