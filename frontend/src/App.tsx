@@ -82,20 +82,20 @@ class App extends React.Component<Props, AppState> {
       });
       return;
     }
-
+  
     this.setState({
       selectedReserveBug: bugType,
       selectedBoardPos: null,
-    });
+    });  
     try {
-      const response = await fetch('/valid-placements');
+      const response = await fetch(`/valid-placements?bug_type=${bugType}`);
       const data: Position[] = await response.json();
       this.setState({ validPlacements: data });
     } catch (err) {
       console.error('Failed to fetch placements:', err);
       this.setState({ errorMessage: 'Could not fetch valid placements.' });
     }
-  };
+  };  
 
   handleBoardCellClick = (q: number, r: number) => {
     const { selectedReserveBug, selectedBoardPos } = this.state;

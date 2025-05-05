@@ -24,17 +24,31 @@
 }
 
 .bug-button {
+    display: flex;
+    align-items: center;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     border: 2px solid #444;
-    background-color: white;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+    gap: 0.5rem;
+}
+
+.bug-button.white {
+    background-color: #e9dece;
+    border-color: #b0a090;
+    color: #333;
+}
+
+.bug-button.black {
+    background-color: #2d2d2d;
+    border-color: #555;
+    color: #fff;
 }
 
 .bug-button:hover {
-    background-color: #f0f0f0;
+    transform: scale(1.05);
 }
 
 .bug-button.selected {
@@ -45,4 +59,14 @@
 .bug-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.bug-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.bug-count {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
 }
