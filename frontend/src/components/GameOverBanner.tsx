@@ -5,13 +5,14 @@ import '../styles/GameOverBanner.css';
 interface GameOverBannerProps {
   winner: string;
   onRestart: () => void;
+  onClose: () => void; /* Added to handle closing the banner */
 }
 
 /**
  * Renders a full-screen overlay at the end of the game.
- * Displays the result (win or draw) and provides a restart button.
+ * Displays the result (win or draw) and provides restart and close buttons.
  */
-const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart }) => {
+const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart, onClose }) => {
   return (
     <div className="overlay">
       <div className="banner">
@@ -22,10 +23,15 @@ const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart }) =>
           </span> 🐝
         </div>
 
-        {/* Restart game button */}
-        <button className="button" onClick={onRestart}>
-          🔄 New Hive Game
-        </button>
+        {/* Restart and Close buttons side by side */}
+        <div className="button-container">
+          <button className="button new-game" onClick={onRestart}>
+            🔄 New Game
+          </button>
+          <button className="button close" onClick={onClose}>
+            ✕ Close
+          </button>
+        </div>
       </div>
     </div>
   );

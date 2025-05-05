@@ -25,6 +25,17 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     clip-path: polygon(52% 0%, 100% 24%, 100% 76%, 52% 100%, 0% 76%, 0% 24%);
     animation: popUp 0.5s ease-out;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/** Container for buttons to align them horizontally */
+.button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
 }
 
 /** Styles for the text content within the banner */
@@ -34,25 +45,37 @@
     font-family: 'Georgia', serif;
 }
 
-/** Styles for the restart button */
+/** Base styles for buttons */
 .button {
     padding: 8px 20px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     border-radius: 10px;
     border: none;
-    background-color: #3f652b; /* Forest green button */
-    color: #f5f5dc; /* Light beige text */
+    color: #f5f5dc;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     font-family: 'Georgia', serif;
+    width: 160px;
 }
 
-/** Hover effect for the button */
-.button:hover {
+/** Styles for the restart button */
+.new-game {
+    background-color: #3f652b; /* Forest green */
+}
+
+.new-game:hover {
     background-color: #5a9c41; /* Lighter forest green on hover */
-    transform: scale(1.05);
+}
+
+/** Styles for the close button */
+.close {
+    background-color: #712e2e; /* Maroon red */
+}
+
+.close:hover {
+    background-color: #a34646; /* Darker maroon on hover */
 }
 
 /** Animation for fading in the overlay */

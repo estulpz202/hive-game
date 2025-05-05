@@ -19,6 +19,7 @@ interface AppState extends GameState {
   errorMessage: string | null;
   zoomLevel: number;
   showRules: boolean;
+  showGameOver: boolean;
 }
 
 class App extends React.Component<Props, AppState> {
@@ -43,6 +44,7 @@ class App extends React.Component<Props, AppState> {
       errorMessage: null,
       zoomLevel: 1,
       showRules: false,
+      showGameOver: false,
     };
   }
 
@@ -60,6 +62,7 @@ class App extends React.Component<Props, AppState> {
       const response = await fetch('/newgame', { method: 'POST' });
       const data = await response.json();
       this.updateGameState(data);
+      this.setState({ showGameOver: false });
     } catch (err) {
       console.error('Failed to start new game:', err);
       this.setState({ errorMessage: 'Failed to start new game.' });
@@ -83,6 +86,10 @@ class App extends React.Component<Props, AppState> {
       validPlacements: [],
       validMovesForSelecPos: [],
       errorMessage: null,
+    }, () => {
+      if (data.phase === 'GameOver') {
+        this.setState({ showGameOver: true });
+      }
     });
   };
 
@@ -221,6 +228,11 @@ class App extends React.Component<Props, AppState> {
     }));
   };
 
+  /** Close the GameOver banner */
+  closeGameOver = () => {
+    this.setState({ showGameOver: false });
+  };
+
   /** Renders error message if one exists */
   renderError(): React.ReactNode {
     const { errorMessage } = this.state;
@@ -268,6 +280,7 @@ class App extends React.Component<Props, AppState> {
       visible_positions,
       zoomLevel,
       showRules,
+      showGameOver,
     } = this.state;
 
     return (
@@ -329,9 +342,13 @@ class App extends React.Component<Props, AppState> {
           />
         </div>
 
-        {/* Display winner and restart button when game ends */}
-        {phase === 'GameOver' && (
-          <GameOverBanner winner={winner || 'Unknown'} onRestart={this.newGame} />
+        {/* Display winner and restart/close buttons when game ends */}
+        {showGameOver && (
+          <GameOverBanner
+            winner={winner || 'Unknown'}
+            onRestart={this.newGame}
+            onClose={this.closeGameOver}
+          />
         )}
       </div>
     );
