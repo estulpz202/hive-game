@@ -1,0 +1,88 @@
+/** Container for the bug picker panel */
+.bug-picker {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #f5c542; /* Honey yellow border */
+    border-radius: 8px;
+    background-color: #f5f5dc; /* Light beige background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    min-height: 140px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/** Visual emphasis for the current player's picker */
+.bug-picker.current-player {
+    border: 2px solid #f5c542; /* Honey yellow border */
+    box-shadow: 0 0 10px rgba(212, 160, 23, 0.5);
+}
+
+/** Player label heading */
+.bug-picker h3 {
+    margin: 0 0 0.5rem 0;
+    color: black;
+    font-family: 'Georgia', serif;
+}
+
+/** Container for bug buttons */
+.bug-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/** Shared styling for all bug buttons */
+.bug-button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+    gap: 0.5rem;
+    font-family: 'Georgia', serif;
+}
+
+/** Background for white player's buttons */
+.bug-button.white {
+    background-color: #f5e8c7; /* Light honey beige */
+    border-color: #d4a017; /* Honey yellow border */
+    color: #3a2e1f; /* Dark brown text */
+}
+
+/** Background for black player's buttons */
+.bug-button.black {
+    background-color: #3a2e1f; /* Dark brown */
+    border-color: #5e3f1b; /* Darker brown border */
+    color: #f5f5dc; /* Light beige text */
+}
+
+/** Hover effect for bug button */
+.bug-button:hover {
+    transform: scale(1.05);
+}
+
+/** Highlight for selected bug */
+.bug-button.selected {
+    background-color: #d4a017; /* Honey yellow for selected */
+    border-color: #b7950b; /* Darker honey yellow border */
+}
+
+/** Disabled state (bug count = 0 or not current player) */
+.bug-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/** Emoji/icon inside button */
+.bug-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/** Count of remaining bugs shown beside icon */
+.bug-count {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}

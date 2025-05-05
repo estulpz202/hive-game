@@ -10,7 +10,7 @@ def test_game_initialization():
     assert game.opponent_player.color == "BLACK"
     assert game.winner is None
     assert game.draw is False
-    assert isinstance(game.valid_positions, set)
+    assert isinstance(game.likely_valid_positions, set)
     assert isinstance(game.valid_moves, dict)
 
 
@@ -95,7 +95,7 @@ def test_force_pass_when_no_move_or_place():
     assert game.cur_player.color == "WHITE"
 
     # Simulate empty reserve and no moves
-    game.valid_positions = set()
+    game.likely_valid_positions = set()
     game.valid_moves = {}
     game.cur_player_passed = game._can_player_pass()
 

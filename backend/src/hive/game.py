@@ -36,10 +36,11 @@ class Game:
         self.phase = Phase.START
         self.winner: Player | None = None
         self.draw: bool = False
-        self.valid_positions = self.board.get_all_valid_positions(self.cur_player)
+        self.likely_valid_positions = self.board.get_all_valid_positions(self.cur_player)
         self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
         self.cur_player_passed = False
         self.prev_player_passed = False
+        self.all_bugs = set()
 
     @property
     def opponent_player(self) -> Player:
@@ -70,6 +71,20 @@ class Game:
 
         return False
 
+    def get_winner(self) -> str | None:
+        """Returns the color of the winning player or 'Draw'."""
+        if self.phase != Phase.GAME_OVER:
+            return None
+
+        if self.draw:
+            return "Draw"
+        elif self.winner == self.player_black:
+            return "Black"
+        elif self.winner == self.player_white:
+            return "White"
+
+        return None
+
     def switch_turn(self) -> None:
         """Switches to the next player's turn and checks for game end conditions."""
         if self.phase == Phase.GAME_OVER:
@@ -77,10 +92,11 @@ class Game:
 
         # Update the game state
         self.cur_player = self.opponent_player
-        self.valid_positions = self.board.get_all_valid_positions(self.cur_player)
+        self.likely_valid_positions = self.board.get_all_valid_positions(self.cur_player)
         self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
         self.prev_player_passed = self.cur_player_passed
         self.cur_player_passed = self._can_player_pass()
+        self.all_bugs = self.get_all_bugs()
 
         # Check if the game has ended
         if self._check_game_end():
@@ -96,7 +112,7 @@ class Game:
         Returns:
             bool: True on success, False on invalid move.
         """
-        if self.phase == Phase.GAME_OVER or not self.valid_positions:
+        if self.phase == Phase.GAME_OVER or not self.likely_valid_positions:
             print("Game is over or no valid positions available.")
             return False
 
@@ -114,8 +130,8 @@ class Game:
 
         # Try to place the bug on the board
         bug = Bug(bug_type, player)
-        print(f"Valid positions: {self.valid_positions}")
-        if not self.board.place_bug(bug, pos, self.valid_positions):
+        print(f"Valid positions: {self.likely_valid_positions}")
+        if not self.board.place_bug(bug, pos, self.likely_valid_positions):
             print(f"Invalid placement at {pos}.")
             return False
 
@@ -159,7 +175,7 @@ class Game:
 
         # Check if they can place any bug
         player = self.cur_player
-        if player.reserve and self.valid_positions:
+        if player.reserve and self.likely_valid_positions:
             return False
 
         # Check if they can move any placed bug
@@ -178,3 +194,27 @@ class Game:
             return True
         else:
             return False
+
+    def get_all_bugs(self) -> list[Bug]:
+        """Returns all bugs placed by both players."""
+        return self.player_white.placed + self.player_black.placed
+
+    def valid_positions(self, bug_type : BugType) -> set[Position]:
+        """Valid placement positions, considering queen placement rules."""
+        player = self.cur_player
+        if (bug_type != BugType.QUEEN_BEE and
+            not player.has_placed_queen and
+            len(player.placed) == MAX_PLACES_WO_QUEEN):
+            return set()
+        else:
+            return self.likely_valid_positions
+
+    @property
+    def visible_positions(self) -> set[Position]:
+        """Returns all board positions with bugs or adjacent to bugs."""
+        visible = set()
+        for bug in self.all_bugs:
+            pos = bug.position
+            visible.add(pos)
+            visible.update(pos.neighbors())
+        return visible

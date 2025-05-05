@@ -46,10 +46,6 @@ class Board:
         stack = self._grid.get(position, [])
         return stack[-1] if stack else None
 
-    def get_all_bugs(self) -> list[Bug]:
-        """Returns a flat list of all bugs on the board."""
-        return [bug for stack in self._grid.values() for bug in stack]
-
     def is_occupied(self, position: Position) -> bool:
         """Returns True if there is at least one bug at the position."""
         return bool(self._grid.get(position))
@@ -368,6 +364,12 @@ class Board:
 
         return True
 
+    def _stack_bug(self, bug: Bug, position: Position) -> None:
+        """Stacks a bug at a given position (used during movement)."""
+        bug.position = position
+        bug.height = len(self._grid[position])
+        self._grid[position].append(bug)
+
     def move_bug(self, bug: Bug, to_pos: Position,
                  valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
@@ -385,5 +387,5 @@ class Board:
             return False
 
         self.remove_top_bug(bug.position)
-        self._drop_bug(bug, to_pos)
+        self._stack_bug(bug, to_pos)
         return True

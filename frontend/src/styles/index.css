@@ -1,0 +1,6 @@
+html, body {
+    overflow: hidden; /** Prevents scrollbars from appearing */
+    margin: 0;        /** Removes default browser margin around the body */
+    padding: 0;       /** Removes default padding */
+    height: 100%;     /** Ensures the body takes up full viewport height */
+}

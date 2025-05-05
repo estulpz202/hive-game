@@ -1,11 +1,12 @@
 """Pydantic models for request/response payloads used in the Hive API."""
 
-from typing import Counter
-from hive.models.player import Player
+from collections import Counter
+
 from pydantic import BaseModel  # type: ignore
 
-from hive.game import Game
+from hive.game import Game, Phase
 from hive.models.bug import Bug
+from hive.models.player import Player
 
 # JSON-serializable view model formats internal game state into structured JSON for the frontend,
 # separating backend logic from presentation.
@@ -38,13 +39,14 @@ class RemainingBugsView(BaseModel):
 
 class PlayerStateView(BaseModel):
     """View model of a player's state in the game."""
-    
+
     color: str
     remaining_bugs: list[RemainingBugsView]
     queen_placed: bool
 
     @staticmethod
     def from_player(player: Player) -> "PlayerStateView":
+        """Creates a PlayerStateView from a Player instance."""
         # Count bug types in the reserve
         bug_counts = Counter(player.reserve)
 
@@ -58,6 +60,12 @@ class PlayerStateView(BaseModel):
             queen_placed=player.has_placed_queen
         )
 
+class PositionView(BaseModel):
+    """View model for q/r coordinate for valid placements or movements."""
+
+    q: int
+    r: int
+
 class GameStateResponse(BaseModel):
     """View model for the current game state."""
 
@@ -66,25 +74,27 @@ class GameStateResponse(BaseModel):
     bugs: list[BugView]
     players: list[PlayerStateView]
     can_pass: bool
+    winner: str | None = None
+    visible_positions: list[PositionView]
 
     @staticmethod
     def from_game(game: Game) -> "GameStateResponse":
         """Creates a GameStateResponse from a Game instance."""
-        bugs = [BugView.from_bug(b) for b in game.board.get_all_bugs()]
+        bugs = [BugView.from_bug(b) for b in game.all_bugs]
         players = [PlayerStateView.from_player(game.player_white),
                    PlayerStateView.from_player(game.player_black)]
+        winner = game.get_winner() if game.phase == Phase.GAME_OVER else None
+        visible_positions = [PositionView(q=p.q, r=p.r) for p in game.visible_positions]
+
         return GameStateResponse(
             phase=game.phase.value,
             current_player=game.cur_player.color,
             bugs=bugs,
             players=players,
-            can_pass=game.cur_player_passed
+            can_pass=game.cur_player_passed,
+            winner=winner,
+            visible_positions=visible_positions
         )
-
-class PositionView(BaseModel):
-    """View model for q/r coordinate for valid placements or movements."""
-    q: int
-    r: int
 
 # Request DTO (Data Transfer Object) is a structured object that defines the data a client must
 # send when calling endpoints. It separates incoming data from internal logic.

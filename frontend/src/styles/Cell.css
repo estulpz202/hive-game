@@ -1,0 +1,66 @@
+/** Base styling for all hex cells on the board */
+.cell {
+    width: 92.5%; /** Create spacing between cells */
+    height: 92.5%;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /** Hexagon shape */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s, background-color 0.2s;
+    box-sizing: border-box;
+}
+
+/** Enlarge the cell slightly on hover */
+.cell:hover {
+    transform: scale(1.075);
+}
+
+/** Styling for an empty cell with no bug */
+.cell.empty {
+    background-color: #ececec; /* Light gray for empty cells, more distinct */
+}
+
+/** Background for black player's bug */
+.cell.black {
+    background-color: #3a2e1f; /* Dark brown for black player's bugs */
+}
+
+/** Background for white player's bug */
+.cell.white {
+    background-color: #d5c4a3; /* Darker beige for white player's bugs, more contrast */
+}
+
+/** Highlight for valid placement positions */
+.cell.valid-placement {
+    background-color: #afd298; /* Soft green for valid placements */
+}
+
+/** Highlight for valid move targets */
+.cell.valid-move {
+    background-color: #afd298; /* Soft green for valid moves */
+}
+
+/** Highlight for currently selected cell */
+.cell.selected {
+    background-color: #d4a017; /* Honey yellow for selected cell */
+}
+
+/** Bug emoji/icon inside a cell */
+.bug-icon {
+    line-height: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/** Overlay circle showing stack count when multiple bugs are stacked */
+.stack-count {
+    position: absolute;
+    background-color: #d9534f; /* Red for stack count background */
+    color: #fff;
+    border-radius: 50%; /** Make it a circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: normal;
+}

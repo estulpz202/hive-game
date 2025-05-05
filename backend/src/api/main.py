@@ -15,4 +15,5 @@ app.include_router(api_router)
 
 @app.get("/")
 def root():
+    """Returns welcome message."""
     return {"message": "Welcome to the Hive API!"}
