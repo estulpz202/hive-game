@@ -1,8 +1,9 @@
+/** Base styling for all hex cells on the board */
 .cell {
-    width: 92.5%;
+    width: 92.5%; /** Create spacing between cells */
     height: 92.5%;
     background-color: #ffffff;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /** Hexagon shape */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,44 +13,53 @@
     box-sizing: border-box;
 }
 
+/** Enlarge the cell slightly on hover */
 .cell:hover {
     transform: scale(1.075);
 }
 
+/** Styling for an empty cell with no bug */
 .cell.empty {
     background-color: #ededed;
 }
 
+/** Background for black player's bug */
 .cell.black {
     background-color: #2d2d2d;
 }
 
+/** Background for white player's bug */
 .cell.white {
     background-color: #e9dece;
 }
 
+/** Highlight for valid placement positions */
 .cell.valid-placement {
     background-color: #a3e4d7;
 }
 
+/** Highlight for valid move targets */
 .cell.valid-move {
     background-color: #f9e79f;
 }
 
+/** Highlight for currently selected cell */
 .cell.selected {
     background-color: #3498db;
 }
 
+/** Bug emoji/icon inside a cell */
 .bug-icon {
     line-height: 1;
     color: inherit;
 }
 
+/** Overlay circle showing stack count when multiple bugs are stacked */
 .stack-count {
     position: absolute;
     background-color: #e74c3c;
     color: white;
-    border-radius: 50%;
+    border-radius: 50%; /** Make it a circle */
     display: flex;
     justify-content: center;
     align-items: center;

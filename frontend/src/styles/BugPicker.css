@@ -1,3 +1,4 @@
+/** Container for the bug picker panel */
 .bug-picker {
     margin: 1rem 0;
     padding: 1rem;
@@ -10,22 +11,26 @@
     box-sizing: border-box;
 }
 
+/** Visual emphasis for the current player's picker */
 .bug-picker.current-player {
     border-color: #4a90e2;
     box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
 }
 
+/** Player label heading */
 .bug-picker h3 {
     margin: 0 0 0.5rem 0;
     color: #333;
 }
 
+/** Container for bug buttons */
 .bug-options {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
 }
 
+/** Shared styling for all bug buttons */
 .bug-button {
     display: flex;
     align-items: center;
@@ -38,37 +43,44 @@
     gap: 0.5rem;
 }
 
+/** Background for white player's buttons */
 .bug-button.white {
     background-color: #e9dece;
     border-color: #b0a090;
     color: #333;
 }
 
+/** Background for black player's buttons */
 .bug-button.black {
     background-color: #2d2d2d;
     border-color: #555;
     color: #fff;
 }
 
+/** Hover effect for bug button */
 .bug-button:hover {
     transform: scale(1.05);
 }
 
+/** Highlight for selected bug */
 .bug-button.selected {
     background-color: #f4d03f;
     border-color: #b7950b;
 }
 
+/** Disabled state (bug count = 0 or not current player) */
 .bug-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
+/** Emoji/icon inside button */
 .bug-icon {
     font-size: 1.2rem;
     line-height: 1;
 }
 
+/** Count of remaining bugs shown beside icon */
 .bug-count {
     font-size: 0.9rem;
     margin-left: 0.5rem;

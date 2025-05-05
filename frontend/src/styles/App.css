@@ -1,3 +1,4 @@
+/** Root container for the app */
 .App {
     display: flex;
     flex-direction: column;
@@ -8,6 +9,7 @@
     position: relative;
 }
 
+/** Game title */
 .title {
     position: absolute;
     top: 1rem;
@@ -17,6 +19,7 @@
     font-size: 2.5rem;
 }
 
+/** Sidebar containing player info, reserve, controls */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -32,14 +35,7 @@
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.bug-pickers,
-.controls {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
+/** Panel displaying current player and instructions */
 .info-panel {
     background-color: #ffffff;
     padding: 1rem;
@@ -48,30 +44,45 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/** Spacing for each line in the info panel */
 .info-panel p {
     margin: 0.5rem 0;
 }
 
+/** Shared layout settings for bug-pickers and controls */
+.bug-pickers,
+.controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/** Bottom margin below bug pickers */
 .bug-pickers {
     margin-bottom: 1rem;
 }
 
+/** Column layout for control section */
 .controls {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
+/** Row layout for groups of buttons (e.g. new/pass, zoom) */
 .button-row {
     display: flex;
     gap: 1rem;
 }
 
+/** Ensure buttons in a row have equal size */
 .button-row button {
     flex: 1 1 auto;
     min-width: 120px;
 }
 
+/** Base styling for all control buttons */
 .controls button {
     padding: 0.5rem 1rem;
     font-size: 1.1rem;
@@ -83,10 +94,12 @@
     transition: background-color 0.2s;
 }
 
+/** Hover effect for buttons */
 .controls button:hover {
     background-color: #357abd;
 }
 
+/** Banner shown for errors (e.g. invalid move) */
 .error-banner {
     background-color: #ffcccc;
     padding: 1rem;
@@ -98,6 +111,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/** Button inside the error banner */
 .error-banner button {
     padding: 0.3rem 0.8rem;
     background-color: #e74c3c;
@@ -107,6 +121,7 @@
     cursor: pointer;
 }
 
+/** Wrapper for the hex board component */
 .board-wrapper {
     display: flex;
     justify-content: center;

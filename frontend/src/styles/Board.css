@@ -1,9 +1,11 @@
+/** The main board container where dragging and zooming are handled */
 .board {
     background: transparent;
     border: none;
     overflow: visible;
 }
 
+/** Container for all cell elements, positioned absolutely */
 .cell-container {
     width: 100%;
     height: 100%;
