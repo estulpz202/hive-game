@@ -50,6 +50,12 @@ npm start
 - Valid actions are visually indicated
 - The game ends automatically when a Queen Bee is surrounded
 
+## 📚 Additional Documentation
+
+For more detailed information on each part of the project
+- Backend: See backend/README.md for setup, API endpoints, and backend-specific details.
+- Frontend: See frontend/README.md for features, file structure, and frontend-specific details.
+
 ## 👤 Author
 
 **Estuardo Lopez Letona**  
