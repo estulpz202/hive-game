@@ -261,7 +261,7 @@ class App extends React.Component<Props, AppState> {
 
     return (
       <div className="App">
-        <h1 className="title">Hive</h1>
+        <h1 className="title">Hive: Battle for the Queen</h1>
 
         {/* Sidebar with game state and controls */}
         <div className="sidebar">
