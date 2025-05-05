@@ -116,6 +116,7 @@
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     border: 1px solid #d9534f; /* Red border */
+    z-index: 750; /* Below GameOverBanner (z-index 1000) but above everything else */
 }
 
 /** Button inside the error banner */
