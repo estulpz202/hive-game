@@ -42,7 +42,7 @@ class App extends React.Component<Props, AppState> {
       validMovesForSelecPos: [],
       errorMessage: null,
       zoomLevel: 1,
-      showRules: false, /* Initialize rules panel as closed */
+      showRules: false,
     };
   }
 
@@ -112,7 +112,7 @@ class App extends React.Component<Props, AppState> {
       this.setState({ validPlacements: data });
     } catch (err) {
       console.error('Failed to fetch placements:', err);
-      this.setState({ errorMessage: 'Could not fetch valid placements.' });
+      this.setState({ errorMessage: 'Failed to fetch valid placements.' });
     }
   };
 
@@ -147,7 +147,7 @@ class App extends React.Component<Props, AppState> {
       this.updateGameState(data);
     } catch (err) {
       console.error('Failed to place bug:', err);
-      this.setState({ errorMessage: 'Invalid placement.' });
+      this.setState({ errorMessage: 'Failed to place bug.' });
     }
   };
 
@@ -163,7 +163,7 @@ class App extends React.Component<Props, AppState> {
       });
     } catch (err) {
       console.error('Failed to get moves:', err);
-      this.setState({ errorMessage: 'Invalid move selection.' });
+      this.setState({ errorMessage: 'Failed to get valid moves.' });
     }
   };
 
@@ -184,7 +184,7 @@ class App extends React.Component<Props, AppState> {
       this.updateGameState(data);
     } catch (err) {
       console.error('Failed to move bug:', err);
-      this.setState({ errorMessage: 'Move failed.' });
+      this.setState({ errorMessage: 'Failed to move bug.' });
     }
   };
 
@@ -192,11 +192,11 @@ class App extends React.Component<Props, AppState> {
   handlePass = async () => {
     try {
       const response = await fetch('/pass', { method: 'POST' });
-      if (!response.ok) throw new Error('Cannot pass turn now');
+      if (!response.ok) throw new Error('Cannot pass turn now.');
       const data = await response.json();
       this.updateGameState(data);
     } catch (err: any) {
-      this.setState({ errorMessage: err.message || 'Failed to pass turn' });
+      this.setState({ errorMessage: err.message || 'Failed to pass turn.' });
     }
   };
 

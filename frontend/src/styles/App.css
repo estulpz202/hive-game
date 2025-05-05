@@ -74,7 +74,7 @@
     gap: 1rem;
 }
 
-/** Row layout for groups of buttons (e.g. new/pass, zoom) */
+/** Row layout for groups of buttons */
 .button-row {
     display: flex;
     gap: 1rem;

@@ -113,26 +113,21 @@ class Game:
             bool: True on success, False on invalid move.
         """
         if self.phase == Phase.GAME_OVER or not self.likely_valid_positions:
-            print("Game is over or no valid positions available.")
             return False
 
         # Check if player has the bug in reserve
         player = self.cur_player
         if bug_type not in player.reserve:
-            print(f"Bug type {bug_type} not in reserve.")
             return False
 
         # Enforce mandatory queen placement by player's 4th turn
         if not player.has_placed_queen:
             if len(player.placed) == MAX_PLACES_WO_QUEEN and bug_type != BugType.QUEEN_BEE:
-                print("Queen must be placed by the 4th turn.")
                 return False
 
         # Try to place the bug on the board
         bug = Bug(bug_type, player)
-        print(f"Valid positions: {self.likely_valid_positions}")
         if not self.board.place_bug(bug, pos, self.likely_valid_positions):
-            print(f"Invalid placement at {pos}.")
             return False
 
         # Update game phase if both queens placed
