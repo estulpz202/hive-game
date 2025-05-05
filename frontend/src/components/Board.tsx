@@ -1,8 +1,10 @@
+/** React component responsible for rendering the game board and handling interactions */
 import React, { useState } from 'react';
 import { Bug, Position } from '../game';
 import Cell from './Cell';
 import '../styles/Board.css';
 
+/** Props for the Board component */
 interface BoardProps {
   bugs: Bug[];
   visiblePositions: Position[];
@@ -13,6 +15,7 @@ interface BoardProps {
   zoomLevel: number;
 }
 
+/** Utility to create a unique key from coordinates */
 const posKey = (q: number, r: number) => `${q},${r}`;
 
 const Board: React.FC<BoardProps> = ({
@@ -24,36 +27,41 @@ const Board: React.FC<BoardProps> = ({
   onBoardCellClick,
   zoomLevel,
 }) => {
+  /** Drag state for panning the board */
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startDrag, setStartDrag] = useState({ x: 0, y: 0 });
 
+  /** Set of all positions to render cells for */
   const cellsToRender = new Map<string, Position>();
-
   for (const pos of visiblePositions) {
     cellsToRender.set(`${pos.q},${pos.r}`, pos);
   }
 
+  /** Ensure at least one cell is rendered at game start */
   if (cellsToRender.size === 0) {
     cellsToRender.set(posKey(0, 0), { q: 0, r: 0 });
   }
 
+  /** Sort cells for consistent rendering */
   const sortedCells = Array.from(cellsToRender.values()).sort((a, b) =>
     a.q === b.q ? a.r - b.r : a.q - b.q
   );
 
-  // Define the base size of the hexagons (width of a regular hexagon)
-  const baseHexWidth = 110; // Base width of the hexagon
-  const hexWidth = baseHexWidth * zoomLevel; // Scaled width
-  const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8; // Scaled height for a regular hexagon
-  const width = hexWidth; // Width for positioning
-  const height = hexHeight; // Height for positioning
+  /** Define hex dimensions based on zoom */
+  const baseHexWidth = 110;
+  const hexWidth = baseHexWidth * zoomLevel;
+  const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8;
+  const width = hexWidth;
+  const height = hexHeight;
 
+  /** Start dragging */
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
     setStartDrag({ x: e.clientX, y: e.clientY });
   };
 
+  /** Update drag offset as mouse moves */
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging) {
       const dx = e.clientX - startDrag.x;
@@ -63,11 +71,12 @@ const Board: React.FC<BoardProps> = ({
     }
   };
 
+  /** End dragging */
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-  // Calculate the offset to center (0,0) with dynamic centering
+  /** Calculate offset to center (0, 0) on screen */
   const offsetX = window.innerWidth / 2 + dragOffset.x;
   const offsetY = window.innerHeight / 2 + dragOffset.y;
 
@@ -81,29 +90,29 @@ const Board: React.FC<BoardProps> = ({
     >
       <div
         className="cell-container"
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-        }}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
       >
         {sortedCells.map((pos) => {
+          /** Get all bugs at this position, sorted by height */
           const bugsAtPos = bugs
             .filter((b) => b.q === pos.q && b.r === pos.r)
             .sort((a, b) => a.height - b.height);
 
+          /** Determine if this cell is currently selected */
           const isSelected =
             selectedBoardPos && selectedBoardPos.q === pos.q && selectedBoardPos.r === pos.r;
 
+          /** Check if this cell is a valid placement */
           const isValidPlacement = validPlacements.some(
             (p) => p.q === pos.q && p.r === pos.r
           );
 
+          /** Check if this cell is a valid move destination */
           const isValidMove = validMovesForSelecPos.some(
             (p) => p.q === pos.q && p.r === pos.r
           );
 
-          // Calculate the pixel position with offset to center (0,0)
+          /** Convert hex grid coordinates to pixel coordinates */
           const x = offsetX + width * (pos.q + pos.r / 2);
           const y = offsetY + height * (3 / 4) * pos.r;
 

@@ -1,3 +1,4 @@
+/** Root React component for the Hive game UI */
 import React from 'react';
 import { GameState, Position } from './game';
 import Board from './components/Board';
@@ -5,8 +6,10 @@ import BugPicker from './components/BugPicker';
 import GameOverBanner from './components/GameOverBanner';
 import './styles/App.css';
 
+/** Props for the App component (unused) */
 interface Props {}
 
+/** App state includes game state + UI-related data */
 interface AppState extends GameState {
   selectedReserveBug: string | null;
   selectedBoardPos: Position | null;
@@ -17,10 +20,12 @@ interface AppState extends GameState {
 }
 
 class App extends React.Component<Props, AppState> {
+  /** Flag to ensure the game is initialized only once */
   private initialized: boolean = false;
 
   constructor(props: Props) {
     super(props);
+    /** Initialize full app/game state */
     this.state = {
       phase: 'Start',
       current_player: '',
@@ -38,6 +43,7 @@ class App extends React.Component<Props, AppState> {
     };
   }
 
+  /** Start game after initial mount */
   componentDidMount(): void {
     if (!this.initialized) {
       this.newGame();
@@ -45,6 +51,7 @@ class App extends React.Component<Props, AppState> {
     }
   }
 
+  /** Starts a new game by calling backend /newgame endpoint */
   newGame = async () => {
     try {
       const response = await fetch('/newgame', { method: 'POST' });
@@ -56,7 +63,10 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
-  updateGameState = (data: GameState, preserveSelection: boolean = false) => {
+  /**
+   * Updates game state.
+   */
+  updateGameState = (data: GameState) => {
     this.setState({
       phase: data.phase,
       current_player: data.current_player,
@@ -65,16 +75,21 @@ class App extends React.Component<Props, AppState> {
       can_pass: data.can_pass,
       winner: data.winner,
       visible_positions: data.visible_positions,
-      selectedReserveBug: preserveSelection ? this.state.selectedReserveBug : null,
-      selectedBoardPos: preserveSelection ? this.state.selectedBoardPos : null,
+      selectedReserveBug: null,
+      selectedBoardPos: null,
       validPlacements: [],
       validMovesForSelecPos: [],
       errorMessage: null,
     });
   };
 
+  /**
+   * Handles user selecting a bug from reserve
+   * Fetches valid placements for that bug type
+   */
   handleReserveBugSelect = async (bugType: string) => {
     if (this.state.selectedReserveBug === bugType) {
+      /** Deselect if clicked again */
       this.setState({
         selectedReserveBug: null,
         selectedBoardPos: null,
@@ -82,11 +97,12 @@ class App extends React.Component<Props, AppState> {
       });
       return;
     }
-  
+
     this.setState({
       selectedReserveBug: bugType,
       selectedBoardPos: null,
-    });  
+    });
+
     try {
       const response = await fetch(`/valid-placements?bug_type=${bugType}`);
       const data: Position[] = await response.json();
@@ -95,8 +111,12 @@ class App extends React.Component<Props, AppState> {
       console.error('Failed to fetch placements:', err);
       this.setState({ errorMessage: 'Could not fetch valid placements.' });
     }
-  };  
+  };
 
+  /**
+   * Handles clicks on a board cell, determining intent:
+   * placement, move source, or move destination
+   */
   handleBoardCellClick = (q: number, r: number) => {
     const { selectedReserveBug, selectedBoardPos } = this.state;
 
@@ -109,6 +129,7 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Places a bug at the given position */
   placeBug = async (q: number, r: number) => {
     const { selectedReserveBug } = this.state;
     if (!selectedReserveBug) return;
@@ -127,6 +148,7 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Fetches valid move destinations for bug at selected position */
   fetchValidMoves = async (q: number, r: number) => {
     try {
       const response = await fetch(`/valid-moves?q=${q}&r=${r}`);
@@ -142,6 +164,7 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Moves a bug from one position to another */
   moveBug = async (from: Position, to: Position) => {
     try {
       const response = await fetch('/move', {
@@ -162,6 +185,7 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Sends pass request to backend */
   handlePass = async () => {
     try {
       const response = await fetch('/pass', { method: 'POST' });
@@ -173,18 +197,21 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Zoom in on board */
   handleZoomIn = () => {
     this.setState((prevState) => ({
-      zoomLevel: Math.min(prevState.zoomLevel + 0.1, 2), // Max zoom level 2x
+      zoomLevel: Math.min(prevState.zoomLevel + 0.1, 2),
     }));
   };
 
+  /** Zoom out from board */
   handleZoomOut = () => {
     this.setState((prevState) => ({
-      zoomLevel: Math.max(prevState.zoomLevel - 0.1, 0.5), // Min zoom level 0.5x
+      zoomLevel: Math.max(prevState.zoomLevel - 0.1, 0.5),
     }));
   };
 
+  /** Renders error message if one exists */
   renderError(): React.ReactNode {
     const { errorMessage } = this.state;
     if (!errorMessage) return null;
@@ -197,6 +224,7 @@ class App extends React.Component<Props, AppState> {
     );
   }
 
+  /** Returns phase-specific instruction message */
   getPhaseInstruction = (): string => {
     const currentPhase = this.state.phase;
     switch (currentPhase) {
@@ -211,8 +239,10 @@ class App extends React.Component<Props, AppState> {
     }
   };
 
+  /** Formats a color string (e.g. 'WHITE' → 'White') */
   displayName = (color: string): string => color.charAt(0) + color.slice(1).toLowerCase();
 
+  /** Main render function */
   render(): React.ReactNode {
     const {
       current_player,
@@ -233,11 +263,14 @@ class App extends React.Component<Props, AppState> {
       <div className="App">
         <h1 className="title">Hive</h1>
 
+        {/* Sidebar with game state and controls */}
         <div className="sidebar">
           <div className="info-panel">
             <p><strong>Current Player:</strong> {this.displayName(current_player) || '-'}</p>
             <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
           </div>
+
+          {/* Player reserve UI */}
           <div className="bug-pickers">
             {players.map((p) => (
               <BugPicker
@@ -249,6 +282,8 @@ class App extends React.Component<Props, AppState> {
               />
             ))}
           </div>
+
+          {/* Action controls */}
           <div className="controls">
             <div className="button-row">
               <button onClick={this.newGame}>New Game</button>
@@ -261,8 +296,10 @@ class App extends React.Component<Props, AppState> {
           </div>
         </div>
 
+        {/* Render error messages if any */}
         {this.renderError()}
 
+        {/* Main game board */}
         <div className="board-wrapper">
           <Board
             bugs={bugs}
@@ -275,6 +312,7 @@ class App extends React.Component<Props, AppState> {
           />
         </div>
 
+        {/* Display winner and restart button when game ends */}
         {phase === 'GameOver' && (
           <GameOverBanner winner={winner || 'Unknown'} onRestart={this.newGame} />
         )}
