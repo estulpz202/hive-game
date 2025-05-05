@@ -41,23 +41,17 @@
 }
 
 .bug-icon {
-    font-size: 2rem;
     line-height: 1;
     color: inherit;
 }
 
 .stack-count {
     position: absolute;
-    bottom: 14px;
-    left: 14px;
     background-color: #e74c3c;
     color: white;
     border-radius: 50%;
-    width: 19px;
-    height: 19px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.8rem;
     font-weight: normal;
 }
