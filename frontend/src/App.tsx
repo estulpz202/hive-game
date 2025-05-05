@@ -231,33 +231,33 @@ class App extends React.Component<Props, AppState> {
 
     return (
       <div className="App">
-        <h1>Hive</h1>
+        <h1 className="title">Hive</h1>
 
-        <div className="info-panel">
-          <p><strong>Player:</strong> {this.displayName(current_player)}</p>
-          <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
-        </div>
-
-        <div className="controls">
-          <button onClick={this.newGame}>New Game</button>
-          {can_pass && <button onClick={this.handlePass}>Pass</button>}
-          <button onClick={this.handleZoomIn}>Zoom In</button>
-          <button onClick={this.handleZoomOut}>Zoom Out</button>
+        <div className="sidebar">
+          <div className="info-panel">
+            <p><strong>Current Player:</strong> {this.displayName(current_player) || '-'}</p>
+            <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
+          </div>
+          <div className="bug-pickers">
+            {players.map((p) => (
+              <BugPicker
+                key={p.color}
+                playerState={p}
+                selectedReserveBug={current_player === p.color ? selectedReserveBug : null}
+                onSelect={this.handleReserveBugSelect}
+                isCurrentPlayer={current_player === p.color}
+              />
+            ))}
+          </div>
+          <div className="controls">
+            <button onClick={this.newGame}>New Game</button>
+            {can_pass && <button onClick={this.handlePass}>Pass</button>}
+            <button onClick={this.handleZoomIn}>Zoom In</button>
+            <button onClick={this.handleZoomOut}>Zoom Out</button>
+          </div>
         </div>
 
         {this.renderError()}
-
-        <div className="bug-pickers">
-          {players.map((p) => (
-            <BugPicker
-              key={p.color}
-              playerState={p}
-              selectedReserveBug={current_player === p.color ? selectedReserveBug : null}
-              onSelect={this.handleReserveBugSelect}
-              isCurrentPlayer={current_player === p.color}
-            />
-          ))}
-        </div>
 
         <div className="board-wrapper">
           <Board

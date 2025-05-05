@@ -1,12 +1,6 @@
 .board {
-    position: relative;
-    width: 1200px;
-    height: 700px;
-    margin: 0 auto;
-    background: #ffffff;
-    border: 3px solid #4a4a4a;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: transparent;
+    border: none;
     overflow: visible;
 }
 

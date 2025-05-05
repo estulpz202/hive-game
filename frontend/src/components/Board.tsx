@@ -43,15 +43,11 @@ const Board: React.FC<BoardProps> = ({
   );
 
   // Define the base size of the hexagons (width of a regular hexagon)
-  const baseHexWidth = 90; // Base width of the hexagon
+  const baseHexWidth = 110; // Base width of the hexagon
   const hexWidth = baseHexWidth * zoomLevel; // Scaled width
   const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8; // Scaled height for a regular hexagon
   const width = hexWidth; // Width for positioning
   const height = hexHeight; // Height for positioning
-
-  // Get the dimensions of the board container (as defined in board.css)
-  const boardWidth = 1200;
-  const boardHeight = 700;
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -71,9 +67,9 @@ const Board: React.FC<BoardProps> = ({
     setIsDragging(false);
   };
 
-  // Calculate the offset to center (0,0)
-  const offsetX = boardWidth / 2 + dragOffset.x;
-  const offsetY = boardHeight / 2 + dragOffset.y;
+  // Calculate the offset to center (0,0) with dynamic centering
+  const offsetX = window.innerWidth / 2 + dragOffset.x;
+  const offsetY = window.innerHeight / 2 + dragOffset.y;
 
   return (
     <div
