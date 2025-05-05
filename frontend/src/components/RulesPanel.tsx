@@ -1,11 +1,17 @@
 import React from 'react';
 import '../styles/RulesPanel.css';
 
+/** Props for RulesPanel component. */
 interface RulesPanelProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+/** 
+ * Renders the RulesPanel component, which displays the rules of the Hive game.
+ * The panel can be toggled open or closed based on the `isOpen` prop.
+ * Includes a close button that triggers the `onClose` callback when clicked.
+ */
 const RulesPanel: React.FC<RulesPanelProps> = ({ isOpen, onClose }) => {
   return (
     <div className={`rules-panel ${isOpen ? 'open' : ''}`}>
