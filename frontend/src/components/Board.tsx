@@ -13,6 +13,8 @@ interface BoardProps {
   selectedBoardPos: Position | null;
   onBoardCellClick: (q: number, r: number) => void;
   zoomLevel: number;
+  dragOffset: { x: number; y: number };
+  setDragOffset: (offset: { x: number; y: number }) => void;
 }
 
 /** Utility to create a unique key from coordinates */
@@ -26,9 +28,9 @@ const Board: React.FC<BoardProps> = ({
   selectedBoardPos,
   onBoardCellClick,
   zoomLevel,
+  dragOffset,
+  setDragOffset,
 }) => {
-  /** Drag state for panning the board */
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startDrag, setStartDrag] = useState({ x: 0, y: 0 });
 

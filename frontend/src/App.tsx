@@ -20,6 +20,7 @@ interface AppState extends GameState {
   zoomLevel: number;
   showRules: boolean;
   showGameOver: boolean;
+  dragOffset: { x: number; y: number };
 }
 
 class App extends React.Component<Props, AppState> {
@@ -45,6 +46,7 @@ class App extends React.Component<Props, AppState> {
       zoomLevel: 1,
       showRules: false,
       showGameOver: false,
+      dragOffset: { x: 0, y: 0 },
     };
   }
 
@@ -62,7 +64,7 @@ class App extends React.Component<Props, AppState> {
       const response = await fetch('/newgame', { method: 'POST' });
       const data = await response.json();
       this.updateGameState(data);
-      this.setState({ showGameOver: false });
+      this.setState({ showGameOver: false, dragOffset: { x: 0, y: 0 } });
     } catch (err) {
       console.error('Failed to start new game:', err);
       this.setState({ errorMessage: 'Failed to start new game.' });
@@ -70,7 +72,7 @@ class App extends React.Component<Props, AppState> {
   };
 
   /**
-   * Updates game state.
+   * Updates game state and resets board position.
    */
   updateGameState = (data: GameState) => {
     this.setState({
@@ -86,11 +88,8 @@ class App extends React.Component<Props, AppState> {
       validPlacements: [],
       validMovesForSelecPos: [],
       errorMessage: null,
-    }, () => {
-      if (data.phase === 'GameOver') {
-        this.setState({ showGameOver: true });
-      }
-    });
+      showGameOver: data.phase === 'GameOver',
+    },);
   };
 
   /**
@@ -244,7 +243,7 @@ class App extends React.Component<Props, AppState> {
         <button onClick={() => this.setState({ errorMessage: null })}>Dismiss</button>
       </div>
     );
-  }
+  };
 
   /** Returns phase-specific instruction message */
   getPhaseInstruction = (): string => {
@@ -281,6 +280,7 @@ class App extends React.Component<Props, AppState> {
       zoomLevel,
       showRules,
       showGameOver,
+      dragOffset,
     } = this.state;
 
     return (
@@ -339,6 +339,8 @@ class App extends React.Component<Props, AppState> {
             validMovesForSelecPos={validMovesForSelecPos}
             selectedBoardPos={selectedBoardPos}
             zoomLevel={zoomLevel}
+            dragOffset={dragOffset}
+            setDragOffset={(offset) => this.setState({ dragOffset: offset })}
           />
         </div>
 
