@@ -20,9 +20,11 @@ def get_state():
     return GameStateResponse.from_game(game)
 
 @api_router.get("/valid-placements", response_model=list[PositionView])
-def get_valid_placements():
-    """Returns valid placement positions for current player."""
-    return [PositionView(q=pos.q, r=pos.r) for pos in game.valid_positions]
+def get_valid_placements(bug_type: str = Query(...)):
+    """Returns valid placement positions considering queen placement rules."""
+    bt = BugType(bug_type)
+    valid_pos = game.valid_positions(bt)
+    return [PositionView(q=p.q, r=p.r) for p in valid_pos]
 
 @api_router.get("/valid-moves", response_model=list[PositionView])
 def get_valid_moves(q: int = Query(...), r: int = Query(...)):
