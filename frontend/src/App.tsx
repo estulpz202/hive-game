@@ -4,6 +4,7 @@ import { GameState, Position } from './game';
 import Board from './components/Board';
 import BugPicker from './components/BugPicker';
 import GameOverBanner from './components/GameOverBanner';
+import RulesPanel from './components/RulesPanel';
 import './styles/App.css';
 
 /** Props for the App component (unused) */
@@ -17,6 +18,7 @@ interface AppState extends GameState {
   validMovesForSelecPos: Position[];
   errorMessage: string | null;
   zoomLevel: number;
+  showRules: boolean;
 }
 
 class App extends React.Component<Props, AppState> {
@@ -40,6 +42,7 @@ class App extends React.Component<Props, AppState> {
       validMovesForSelecPos: [],
       errorMessage: null,
       zoomLevel: 1,
+      showRules: false, /* Initialize rules panel as closed */
     };
   }
 
@@ -211,6 +214,13 @@ class App extends React.Component<Props, AppState> {
     }));
   };
 
+  /** Toggle the rules panel visibility */
+  toggleRules = () => {
+    this.setState((prevState) => ({
+      showRules: !prevState.showRules,
+    }));
+  };
+
   /** Renders error message if one exists */
   renderError(): React.ReactNode {
     const { errorMessage } = this.state;
@@ -257,11 +267,15 @@ class App extends React.Component<Props, AppState> {
       winner,
       visible_positions,
       zoomLevel,
+      showRules,
     } = this.state;
 
     return (
       <div className="App">
         <h1 className="title">Hive: Battle for the Queen</h1>
+
+        {/* Rules panel */}
+        <RulesPanel isOpen={showRules} onClose={this.toggleRules} />
 
         {/* Sidebar with game state and controls */}
         <div className="sidebar">
@@ -286,12 +300,15 @@ class App extends React.Component<Props, AppState> {
           {/* Action controls */}
           <div className="controls">
             <div className="button-row">
+              <button onClick={this.toggleRules}>{showRules ? 'Hide Rules' : 'Show Rules'}</button>
               <button onClick={this.newGame}>New Game</button>
-              {can_pass && <button onClick={this.handlePass}>Pass</button>}
             </div>
             <div className="button-row">
               <button onClick={this.handleZoomIn}>Zoom In</button>
               <button onClick={this.handleZoomOut}>Zoom Out</button>
+            </div>
+            <div className="button-row">
+              {can_pass && <button onClick={this.handlePass}>Pass</button>}
             </div>
           </div>
         </div>
