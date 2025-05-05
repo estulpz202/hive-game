@@ -250,10 +250,14 @@ class App extends React.Component<Props, AppState> {
             ))}
           </div>
           <div className="controls">
-            <button onClick={this.newGame}>New Game</button>
-            {can_pass && <button onClick={this.handlePass}>Pass</button>}
-            <button onClick={this.handleZoomIn}>Zoom In</button>
-            <button onClick={this.handleZoomOut}>Zoom Out</button>
+            <div className="button-row">
+              <button onClick={this.newGame}>New Game</button>
+              {can_pass && <button onClick={this.handlePass}>Pass</button>}
+            </div>
+            <div className="button-row">
+              <button onClick={this.handleZoomIn}>Zoom In</button>
+              <button onClick={this.handleZoomOut}>Zoom Out</button>
+            </div>
           </div>
         </div>
 

@@ -20,8 +20,8 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    width: 300px;
+    align-items: center;
+    width: 320px;
     padding: 1rem;
     position: absolute;
     top: 0;
@@ -30,6 +30,14 @@
     background-color: #e0e0e0;
     border-left: 2px solid #ccc;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.bug-pickers,
+.controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .info-panel {
@@ -51,12 +59,22 @@
 .controls {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+}
+
+.button-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.button-row button {
+    flex: 1 1 auto;
+    min-width: 120px;
 }
 
 .controls button {
     padding: 0.5rem 1rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
     border: none;
     border-radius: 4px;
     background-color: #4a90e2;
@@ -94,7 +112,7 @@
     justify-content: center;
     align-items: center;
     margin-right: auto;
-    margin-left: -190px;
+    margin-left: -200px;
     margin-bottom: auto;
     margin-top: -15px;
 }
