@@ -49,7 +49,7 @@ const Board: React.FC<BoardProps> = ({
   );
 
   /** Define hex dimensions based on zoom */
-  const baseHexWidth = 110;
+  const baseHexWidth = 105;
   const hexWidth = baseHexWidth * zoomLevel;
   const hexHeight = (hexWidth / Math.sqrt(3)) * 1.8;
   const width = hexWidth;

@@ -35,7 +35,7 @@
 .bug-button {
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.95rem;
     font-size: 0.9rem;
     cursor: pointer;
     border-radius: 4px;
@@ -77,12 +77,12 @@
 
 /** Emoji/icon inside button */
 .bug-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1;
 }
 
 /** Count of remaining bugs shown beside icon */
 .bug-count {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin-left: 0.5rem;
 }

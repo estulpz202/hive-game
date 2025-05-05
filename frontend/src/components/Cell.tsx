@@ -54,7 +54,7 @@ const Cell: React.FC<CellProps> = ({
       {/* Render the top bug icon if present */}
       {topBug ? (
         <>
-          <span className="bug-icon" style={{ fontSize: `${2.7 * zoomLevel}rem` }}>
+          <span className="bug-icon" style={{ fontSize: `${2.65 * zoomLevel}rem` }}>
             {bugIcons[topBug.bug_type] || topBug.bug_type[0]}
           </span>
 
@@ -63,11 +63,11 @@ const Cell: React.FC<CellProps> = ({
             <span
               className="stack-count"
               style={{
-                width: `${19 * zoomLevel}px`,
-                height: `${19 * zoomLevel}px`,
+                width: `${18.5 * zoomLevel}px`,
+                height: `${18.5 * zoomLevel}px`,
                 fontSize: `${0.85 * zoomLevel}rem`,
-                bottom: `${18 * zoomLevel}px`,
-                left: `${16 * zoomLevel}px`,
+                bottom: `${17 * zoomLevel}px`,
+                left: `${14 * zoomLevel}px`,
               }}
             >
               {bugs.length}
