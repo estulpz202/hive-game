@@ -39,7 +39,7 @@
 /** Panel displaying current player and instructions */
 .info-panel {
     background-color: #f5f5dc; /* Light beige like parchment */
-    padding: 1rem;
+    padding: 0.75rem;
     border-radius: 8px;
     margin-bottom: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -48,9 +48,31 @@
 
 /** Spacing for each line in the info panel */
 .info-panel p {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     margin: 0.5rem 0;
     color: black;
+}
+
+/* The colored circle that indicates current player */
+.player-chip {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    border: 1.5px solid #333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Color for white player */
+.player-chip.white {
+    background-color: #d5c4a3;
+}
+
+/* Color for black player */
+.player-chip.black {
+    background-color: #2d2d2d;
 }
 
 /** Shared layout settings for bug-pickers and controls */
@@ -89,20 +111,46 @@
 /** Base styling for all control buttons */
 .controls button {
     padding: 0.5rem 1rem;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     border: none;
     border-radius: 4px;
     background-color: #f5c542; /* Honey yellow for buttons */
     color: #344535; /* Forest green text */
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    /* Smooth transition for color and shadow */
+    transition: background-color 0.5s ease, box-shadow 0.5s ease, transform 0.1s;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /** Hover effect for buttons */
 .controls button:hover {
-    background-color: #be8f00; /* Darkey honey yellow on hover */
+    background-color: #be8f00; /* Darker honey yellow on hover */
     transform: translateY(-2px); /* Slight lift effect */
+}
+
+/** Pulsating animation for the Show Rules button on load */
+.controls button.highlight-pulse {
+    animation: pulse 1.2s ease-in-out infinite;
+    background-color: #ffbb00;
+    color: #344535;
+}
+
+/** Keyframes for pulsating effect */
+@keyframes pulse {
+    /* Bright white glow */
+    0% {
+        transform: scale(1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 12px rgba(255, 255, 255, 0.7);
+    }
+    /* Brighter, wider white glow */
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 24px rgba(255, 255, 255, 0.9);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 12px rgba(255, 255, 255, 0.7);
+    }
 }
 
 /** Banner shown for errors (e.g. invalid move) */

@@ -21,6 +21,7 @@ interface AppState extends GameState {
   showRules: boolean;
   showGameOver: boolean;
   dragOffset: { x: number; y: number };
+  highlightRulesButton: boolean;
 }
 
 class App extends React.Component<Props, AppState> {
@@ -47,6 +48,7 @@ class App extends React.Component<Props, AppState> {
       showRules: false,
       showGameOver: false,
       dragOffset: { x: 0, y: 0 },
+      highlightRulesButton: true,
     };
   }
 
@@ -55,6 +57,10 @@ class App extends React.Component<Props, AppState> {
     if (!this.initialized) {
       this.newGame();
       this.initialized = true;
+      // Stop highlighting rules button after 5 seconds
+      setTimeout(() => {
+        this.setState({ highlightRulesButton: false });
+      }, 4900);
     }
   }
 
@@ -64,7 +70,11 @@ class App extends React.Component<Props, AppState> {
       const response = await fetch('/newgame', { method: 'POST' });
       const data = await response.json();
       this.updateGameState(data);
-      this.setState({ showGameOver: false, dragOffset: { x: 0, y: 0 } });
+      this.setState({ showGameOver: false, dragOffset: { x: 0, y: 0 }, highlightRulesButton: true });
+      // Re-apply highlight on new game and stop after 5 seconds
+      setTimeout(() => {
+        this.setState({ highlightRulesButton: false });
+      }, 5000);
     } catch (err) {
       console.error('Failed to start new game:', err);
       this.setState({ errorMessage: 'Failed to start new game.' });
@@ -89,7 +99,7 @@ class App extends React.Component<Props, AppState> {
       validMovesForSelecPos: [],
       errorMessage: null,
       showGameOver: data.phase === 'GameOver',
-    },);
+    });
   };
 
   /**
@@ -250,11 +260,11 @@ class App extends React.Component<Props, AppState> {
     const currentPhase = this.state.phase;
     switch (currentPhase) {
       case 'Start':
-        return 'Place bugs from reserve. After placing your queen (within 4 turns), you can move.';
+        return 'Place a bug from your reserve. Must place Queen by 4th turn to unlock movement.';
       case 'PlaceOrMove':
-        return 'Place a bug from reserve or move one in play. Valid actions are highlighted.';
+        return 'Place a new bug or move one in play. Highlighted spaces show valid options.';
       case 'GameOver':
-        return 'Start a new game to play again.';
+        return 'Game over! Start a new game to play again.';
       default:
         return '-';
     }
@@ -281,6 +291,7 @@ class App extends React.Component<Props, AppState> {
       showRules,
       showGameOver,
       dragOffset,
+      highlightRulesButton,
     } = this.state;
 
     return (
@@ -293,7 +304,11 @@ class App extends React.Component<Props, AppState> {
         {/* Sidebar with game state and controls */}
         <div className="sidebar">
           <div className="info-panel">
-            <p><strong>Current Player:</strong> {this.displayName(current_player) || '-'}</p>
+            <p style={{ display: 'flex' }}>
+              <strong>Turn:</strong>&nbsp;
+              {this.displayName(current_player)}
+              <span className={`player-chip ${current_player.toLowerCase()}`} />
+            </p>
             <p><strong>Instructions:</strong> {this.getPhaseInstruction()}</p>
           </div>
 
@@ -313,7 +328,12 @@ class App extends React.Component<Props, AppState> {
           {/* Action controls */}
           <div className="controls">
             <div className="button-row">
-              <button onClick={this.toggleRules}>{showRules ? 'Hide Rules' : 'Show Rules'}</button>
+              <button
+                onClick={this.toggleRules}
+                className={highlightRulesButton ? 'highlight-pulse' : ''}
+              >
+                {showRules ? 'Hide Rules' : 'Show Rules'}
+              </button>
               <button onClick={this.newGame}>New Game</button>
             </div>
             <div className="button-row">
