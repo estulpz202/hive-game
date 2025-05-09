@@ -13,14 +13,31 @@ interface GameOverBannerProps {
  * Displays the result (win or draw) and provides restart and close buttons.
  */
 const GameOverBanner: React.FC<GameOverBannerProps> = ({ winner, onRestart, onClose }) => {
+  // Determine the text color based on the winner
+  const getWinnerTextColor = (winner: string) => {
+    switch (winner.toLowerCase()) {
+      case 'white':
+        return '#FFFFFF'; // White
+      case 'black':
+        return '#2d2d2d'; // Black
+      default:
+        return '#FFFFFF'; // White
+    }
+  };
+
   return (
     <div className="overlay">
       <div className="banner">
         {/* Display game result */}
         <div className="text">
-          🐝 <span>
+          🐝{' '}
+          <span
+            className="winner-text"
+            style={{ color: getWinnerTextColor(winner) }}
+          >
             {winner === 'Draw' ? 'Game Ends in a Draw!' : `${winner} Wins!`}
-          </span> 🐝
+          </span>{' '}
+          🐝
         </div>
 
         {/* Restart and Close buttons side by side */}
