@@ -2,6 +2,7 @@ from hive.behaviors.base import BugBehavior
 from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.position import Position
+from hive.rules import RuleEngine
 
 
 class QueenBehavior(BugBehavior):
@@ -22,7 +23,7 @@ class QueenBehavior(BugBehavior):
             list[Position]: Valid destinations for the queen.
         """
         # Check one hive rule for removing bug
-        if not board.is_one_hive_move(bug.position):
+        if not RuleEngine.is_one_hive_move(board, bug.position):
             return []
 
         valid = []
@@ -31,8 +32,8 @@ class QueenBehavior(BugBehavior):
         for dest in bug.position.neighbors():
             # Check dest unoccupied, OHR for dest, and FOM
             if (board.is_occupied(dest) or
-                not board.dest_is_connected(bug.position, dest) or
-                not board.can_slide_to(bug.position, dest)):
+                not RuleEngine.dest_is_connected(board, bug.position, dest) or
+                not RuleEngine.can_slide_to(board, bug.position, dest)):
                 continue
 
             valid.append(dest)

@@ -2,6 +2,7 @@ from hive.behaviors.base import BugBehavior
 from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.position import Position
+from hive.rules import RuleEngine
 
 
 class GrasshopperBehavior(BugBehavior):
@@ -23,7 +24,7 @@ class GrasshopperBehavior(BugBehavior):
             list[Position]: Valid destinations for the grasshopper.
         """
         # Check one hive rule for removing bug
-        if not board.is_one_hive_move(bug.position):
+        if not RuleEngine.is_one_hive_move(board, bug.position):
             return []
 
         valid = []

@@ -5,6 +5,7 @@ from hive.models.bug import Bug
 from hive.models.bugtype import BugType
 from hive.models.player import Player
 from hive.models.position import Position
+from hive.rules import RuleEngine
 
 
 class Phase(Enum):
@@ -36,8 +37,8 @@ class Game:
         self.phase = Phase.START
         self.winner: Player | None = None
         self.draw: bool = False
-        self.likely_valid_positions = self.board.get_all_valid_positions(self.cur_player)
-        self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
+        self.likely_valid_positions = RuleEngine.get_all_valid_places(self.board, self.cur_player)
+        self.valid_moves = RuleEngine.get_valid_moves(self.board, self.cur_player)
         self.cur_player_passed = False
         self.prev_player_passed = False
         self.all_bugs = set()
@@ -92,8 +93,8 @@ class Game:
 
         # Update the game state
         self.cur_player = self.opponent_player
-        self.likely_valid_positions = self.board.get_all_valid_positions(self.cur_player)
-        self.valid_moves = self.board.get_all_valid_moves(self.cur_player)
+        self.likely_valid_positions = RuleEngine.get_all_valid_places(self.board, self.cur_player)
+        self.valid_moves = RuleEngine.get_valid_moves(self.board, self.cur_player)
         self.prev_player_passed = self.cur_player_passed
         self.cur_player_passed = self._can_player_pass()
         self.all_bugs = self.get_all_bugs()

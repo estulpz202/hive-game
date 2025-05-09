@@ -2,6 +2,7 @@ from hive.behaviors.base import BugBehavior
 from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.position import Position
+from hive.rules import RuleEngine
 
 
 class BeetleBehavior(BugBehavior):
@@ -24,7 +25,7 @@ class BeetleBehavior(BugBehavior):
             list[Position]: Valid destinations for the beetle.
         """
         # Check one hive rule for removing bug
-        if not board.is_one_hive_move(bug.position):
+        if not RuleEngine.is_one_hive_move(board, bug.position):
             return []
 
         valid = []
@@ -32,8 +33,8 @@ class BeetleBehavior(BugBehavior):
         # Check adjacent destinations
         for dest in bug.position.neighbors():
             # Check OHR for dest and FOM
-            if (not board.dest_is_connected(bug.position, dest) or
-                not board.can_climb_to(bug.position, dest)):
+            if (not RuleEngine.dest_is_connected(board, bug.position, dest) or
+                not RuleEngine.can_climb_to(board, bug.position, dest)):
                 continue
 
             valid.append(dest)

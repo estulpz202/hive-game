@@ -2,6 +2,7 @@ from hive.behaviors.base import BugBehavior
 from hive.board import Board
 from hive.models.bug import Bug
 from hive.models.position import Position
+from hive.rules import RuleEngine
 
 
 class AntBehavior(BugBehavior):
@@ -22,7 +23,7 @@ class AntBehavior(BugBehavior):
             list[Position]: Valid destinations for the ant.
         """
         # Check one hive rule for removing bug
-        if not board.is_one_hive_move(bug.position):
+        if not RuleEngine.is_one_hive_move(board, bug.position):
             return []
 
         visited = set()
@@ -40,8 +41,8 @@ class AntBehavior(BugBehavior):
 
                 # Check dest unoccupied, OHR for dest, and FOM
                 if (board.is_occupied(dest) or
-                    not board.dest_is_connected(bug.position, dest) or
-                    not board.can_slide_to(cur_pos, dest)):
+                    not RuleEngine.dest_is_connected(board, bug.position, dest) or
+                    not RuleEngine.can_slide_to(board, cur_pos, dest)):
                     continue
 
                 valid.add(dest)
