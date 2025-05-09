@@ -18,9 +18,9 @@ npm start
 - Turn-based player interface and game state display
 - Visual indicators for valid placements and moves
 - Bug picker with live reserve counts and queen placement status
-- Rules panel with detailed game instructions, toggleable via a sidebar button
+- Toggleable rules panel, with a pulsating animation for visibility on initial load
 - Pass button appears when no valid moves or placements
-- Automatic win detection and game-over banner
+- Automatic win detection and dynamic game-over banner
 - Responsive, modular UI using React component structure
 - Clean and extensible codebase
 

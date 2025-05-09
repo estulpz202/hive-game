@@ -16,7 +16,7 @@ make run
 
 - Full Hive base game logic:
   - Queen Bee, Ant, Beetle, Spider, Grasshopper
-  - Strategy Pattern for bug-specific movement logic
+  - Strategy Pattern for bug-specific movement logic (in `behaviors/`)
 - Rule enforcement:
   - Turn-based play, Queen placement timing
   - One Hive Rule, Freedom of Movement, stack behavior
@@ -33,7 +33,8 @@ make run
 
 - `src/hive/`
   - `game.py` – Top-level turn controller and game state manager.
-  - `board.py` – Enforces all board-level rules: placement, movement, connectivity.
+  - `board.py` – Placement/movement enforcement and bug stacking.
+  - `rules.py` – Static rule engine for validation and hive rules.
   - `models/` – Core data models: `Bug`, `Player`, `Position`, `BugType`.
   - `behaviors/` – Movement strategy implementations per bug type (Queen, Ant, Beetle, etc.).
 - `src/api/`
