@@ -122,15 +122,15 @@ class RuleEngine:
 
         # Temporarily remove top bug
         # If from_pos still occupied, the hive remains connected
-        removed_bug = board.remove_top_bug(from_pos)
+        removed_bug = board._remove_top_bug(from_pos)
         if board.is_occupied(from_pos):
-            board._grid[from_pos].append(removed_bug)
+            board._drop_bug(removed_bug, from_pos)
             return True
 
         # Otherwise, check if remaining occupied positions are connected
         remaining = set(board.occupied_positions())
         if not remaining:
-            board._grid[from_pos].append(removed_bug)
+            board._drop_bug(removed_bug, from_pos)
             return True
 
         # Start DFS from any remaining position
@@ -146,7 +146,7 @@ class RuleEngine:
                     stack.append(nbor)
 
         # Restore the removed bug
-        board._grid[from_pos].append(removed_bug)
+        board._drop_bug(removed_bug, from_pos)
 
         # Check if all remaining positions were visited
         return visited == remaining

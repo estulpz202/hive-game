@@ -18,7 +18,7 @@ class Board:
         # Using defaultdict to automatically initialize empty lists for positions
         self._grid: dict[Position, list[Bug]] = defaultdict(list)
 
-    def remove_top_bug(self, position: Position) -> Bug | None:
+    def _remove_top_bug(self, position: Position) -> Bug | None:
         """Removes and returns the top bug at a given position."""
         stack = self._grid.get(position)
         if stack:
@@ -86,6 +86,6 @@ class Board:
         if not RuleEngine.can_move_bug(self, bug, to_pos, valid_moves):
             return False
 
-        self.remove_top_bug(bug.position)
+        self._remove_top_bug(bug.position)
         self._drop_bug(bug, to_pos)
         return True

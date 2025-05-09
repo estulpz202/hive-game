@@ -51,7 +51,7 @@ def test_remove_top_bug(board, players):
     bug = Bug(BugType.ANT, white, pos)
 
     board.place_bug(bug, pos)
-    removed = board.remove_top_bug(pos)
+    removed = board._remove_top_bug(pos)
     assert removed == bug
     assert board.get_top_bug(pos) is None
 
