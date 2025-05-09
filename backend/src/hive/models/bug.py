@@ -32,3 +32,8 @@ class Bug:
             self.behavior = get_behavior_for(self.bug_type)
 
         return self.behavior.get_valid_moves(self, board)
+
+    def on_place(self) -> None:
+        """Updates the owning player when this bug is placed on the board."""
+        self.owner.remove_from_reserve(self.bug_type)
+        self.owner.add_to_placed(self)

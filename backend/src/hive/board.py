@@ -32,11 +32,6 @@ class Board:
         bug.height = len(self._grid[position])
         self._grid[position].append(bug)
 
-        # Update the player's reserve and placed bugs
-        player = bug.owner
-        player.remove_from_reserve(bug.bug_type)
-        player.add_to_placed(bug)
-
     def get_stack(self, position: Position) -> list[Bug]:
         """Returns the bug stack at a given position."""
         return self._grid.get(position, [])
@@ -160,6 +155,9 @@ class Board:
         """
         if not self.can_place_bug(bug.owner, pos, valid_positions):
             return False
+
+        # Let the bug update its owner (remove from reserve, add to placed)
+        bug.on_place()
 
         self._drop_bug(bug, pos)
         return True
@@ -356,12 +354,6 @@ class Board:
 
         return True
 
-    def _stack_bug(self, bug: Bug, position: Position) -> None:
-        """Stacks a bug at a given position (used during movement)."""
-        bug.position = position
-        bug.height = len(self._grid[position])
-        self._grid[position].append(bug)
-
     def move_bug(self, bug: Bug, to_pos: Position,
                  valid_moves: dict[Bug, list[Position]] | None = None) -> bool:
         """
@@ -379,5 +371,5 @@ class Board:
             return False
 
         self.remove_top_bug(bug.position)
-        self._stack_bug(bug, to_pos)
+        self._drop_bug(bug, to_pos)
         return True

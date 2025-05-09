@@ -258,6 +258,8 @@ def test_get_all_valid_moves_skips_bugs_not_on_top(board, players):
     ant = Bug(BugType.ANT, white)
     assert board.place_bug(queen, Position(0, 0))
     board._drop_bug(ant, Position(0, 0))  # Now queen is covered
+    white.remove_from_reserve(ant.bug_type)
+    white.add_to_placed(ant)
     assert white.has_placed_queen
     assert white.queen_bug == queen
 
