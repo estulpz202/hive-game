@@ -47,3 +47,19 @@ def test_bug_position_can_be_set_later():
     assert bug.position is None
     bug.position = Position(0, 0)
     assert bug.position == Position(0, 0)
+
+
+def test_on_place_updates_player_reserve_and_placed():
+    player = Player("BLACK")
+    bug = Bug(BugType.QUEEN_BEE, player)
+
+    # Sanity check before
+    assert BugType.QUEEN_BEE in player.reserve
+    assert bug not in player.placed
+
+    bug.on_place()
+
+    # Reserve should be updated
+    assert BugType.QUEEN_BEE not in player.reserve
+    # Bug should be in placed list
+    assert bug in player.placed

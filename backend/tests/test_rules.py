@@ -213,3 +213,23 @@ def test_get_all_valid_moves_returns_correct_structure(board, players):
     assert isinstance(moves[queen], list)
     assert all(isinstance(p, Position) for p in moves[queen])
     assert set([Position(1, -1), Position(0, 1)]) == set(moves[queen])
+
+
+def test_cannot_move_to_same_position(board, players):
+    white, _ = players
+    pos = Position(0, 0)
+    bug = Bug(BugType.QUEEN_BEE, white)
+
+    assert board.place_bug(bug, pos)
+    assert RuleEngine.can_move_bug(board, bug, pos) is False
+
+
+def test_is_on_top_returns_false_if_covered(board, players):
+    white, _ = players
+    queen = Bug(BugType.QUEEN_BEE, white)
+    ant = Bug(BugType.ANT, white)
+
+    assert board.place_bug(queen, Position(0, 0))
+    board._drop_bug(ant, Position(0, 0))  # Cover the queen
+    assert not RuleEngine.is_on_top(board, queen)
+    assert RuleEngine.is_on_top(board, ant)

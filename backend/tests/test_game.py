@@ -133,3 +133,34 @@ def test_game_win(monkeypatch):
 
     assert game.phase == Phase.GAME_OVER
     assert game.winner.color == "WHITE"
+
+
+def test_get_winner_returns_expected_value(monkeypatch):
+    game = Game()
+    game.phase = Phase.GAME_OVER
+
+    game.winner = game.player_white
+    assert game.get_winner() == "White"
+
+    game.winner = game.player_black
+    assert game.get_winner() == "Black"
+
+    game.draw = True
+    game.winner = None
+    assert game.get_winner() == "Draw"
+
+
+def test_visible_positions_includes_neighbors():
+    game = Game()
+
+    game.place_bug(BugType.QUEEN_BEE, Position(0, 0))
+    game.place_bug(BugType.QUEEN_BEE, Position(1, 0))
+    game.all_bugs = game.get_all_bugs()
+
+    visible = game.visible_positions
+    center = Position(0, 0)
+    neighbors = center.neighbors()
+
+    assert center in visible
+    for n in neighbors:
+        assert n in visible

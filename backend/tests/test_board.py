@@ -80,3 +80,25 @@ def test_move_bug_and_updates_position(board, players):
     assert board.move_bug(white_bug, p3)
     assert board.get_top_bug(p3) == white_bug
     assert not board.is_occupied(p2)
+
+
+def test_multiple_stacks_independent(board, players):
+    white, _ = players
+    pos1 = Position(0, 0)
+    pos2 = Position(1, -1)
+
+    bug1 = Bug(BugType.SPIDER, white)
+    bug2 = Bug(BugType.BEETLE, white)
+
+    board._drop_bug(bug1, pos1)
+    board._drop_bug(bug2, pos2)
+
+    assert board.get_stack(pos1) == [bug1]
+    assert board.get_stack(pos2) == [bug2]
+    assert board.get_top_bug(pos1) == bug1
+    assert board.get_top_bug(pos2) == bug2
+
+
+def test_remove_from_empty_returns_none(board):
+    pos = Position(5, 5)
+    assert board._remove_top_bug(pos) is None
