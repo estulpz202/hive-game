@@ -311,17 +311,15 @@ class Board:
         if not player.has_placed_queen:
             return {}
 
-        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
         moves = {}
         for bug in player.placed:
             # Skip if bug not on top
             if self.get_top_bug(bug.position) != bug:
                 continue
 
-            behavior = get_behavior_for(bug.bug_type)
-            valid = behavior.get_valid_moves(bug, self)
-            if valid:
-                moves[bug] = valid
+            valid_moves = bug.get_valid_moves(self)
+            if valid_moves:
+                moves[bug] = valid_moves
 
         return moves
 
@@ -352,14 +350,8 @@ class Board:
         if not stack or stack[-1] != bug:
             return False
 
-        # Check one hive rule
-        if not self.is_one_hive_move(bug.position, to_pos):
-            return False
-
-        # Check bug specific movement rules and FOM via behavior strategy
-        from hive.behaviors import get_behavior_for  # Lazy import, avoid circularity
-        behavior = get_behavior_for(bug.bug_type)
-        if to_pos not in behavior.get_valid_moves(bug, self):
+        # Check OHR, FOM, and bug specific movement rules
+        if to_pos not in bug.get_valid_moves(self):
             return False
 
         return True

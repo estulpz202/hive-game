@@ -99,10 +99,12 @@ const RulesPanel: React.FC<RulesPanelProps> = ({ isOpen, onClose }) => {
           <h2>Winning the Hive</h2>
           <ul>
             <li>
-              The game ends when a Queen Bee is surrounded on all six sides by any bugs—her player loses!
+              The game ends when a Queen Bee is surrounded
+              on all six sidesby any bugs—her player loses!
             </li>
             <li>
-              If both Queens are surrounded at once or neither player can take a turn, the game ends in a draw.
+              If both Queens are surrounded at once or neither player can take a turn,
+              the game ends in a draw.
             </li>
           </ul>
 
