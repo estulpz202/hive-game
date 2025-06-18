@@ -113,6 +113,7 @@ class App extends React.Component<Props, AppState> {
         selectedReserveBug: null,
         selectedBoardPos: null,
         validPlacements: [],
+        validMovesForSelecPos: [],
       });
       return;
     }
@@ -120,6 +121,7 @@ class App extends React.Component<Props, AppState> {
     this.setState({
       selectedReserveBug: bugType,
       selectedBoardPos: null,
+      validMovesForSelecPos: [],
     });
 
     try {
