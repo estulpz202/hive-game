@@ -279,7 +279,6 @@ class App extends React.Component<Props, AppState> {
   render(): React.ReactNode {
     const {
       current_player,
-      phase,
       players,
       bugs,
       validPlacements,
