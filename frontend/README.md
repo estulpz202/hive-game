@@ -42,4 +42,4 @@ npm start
 
 **Estuardo Lopez Letona**  
 GitHub: [@estulpz202](https://github.com/estulpz202)  
-Email: elopezle@andrew.cmu.edu
+Email: <elopezle@andrew.cmu.edu>
