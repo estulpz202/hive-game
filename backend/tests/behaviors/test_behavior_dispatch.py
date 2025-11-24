@@ -1,9 +1,9 @@
 from hive.behaviors import get_behavior_for
-from hive.behaviors.queen import QueenBehavior
 from hive.behaviors.ant import AntBehavior
-from hive.behaviors.spider import SpiderBehavior
 from hive.behaviors.beetle import BeetleBehavior
 from hive.behaviors.grasshopper import GrasshopperBehavior
+from hive.behaviors.queen import QueenBehavior
+from hive.behaviors.spider import SpiderBehavior
 from hive.models.bugtype import BugType
 
 

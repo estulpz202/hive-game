@@ -28,7 +28,7 @@ def test_place_bug_illegal_without_queen_by_turn_4():
     # white center, black left of center, white right of center
     white_positions = [Position(q, 0) for q in range(3)]
     black_positions = [Position(-q, 0) for q in range(1, 4)]
-    for w_pos, b_pos in zip(white_positions, black_positions):
+    for w_pos, b_pos in zip(white_positions, black_positions, strict=False):
         assert game.place_bug(BugType.ANT, w_pos)
         assert game.place_bug(BugType.ANT, b_pos)
 

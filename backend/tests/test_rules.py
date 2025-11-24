@@ -6,6 +6,7 @@ from hive.models.player import Player
 from hive.models.position import Position
 from hive.rules import RuleEngine
 
+
 @pytest.fixture
 def board():
     return Board()

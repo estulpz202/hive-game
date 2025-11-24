@@ -5,6 +5,7 @@ from hive.models.bug import Bug, BugType
 from hive.models.player import Player
 from hive.models.position import Position
 
+
 @pytest.fixture
 def board():
     return Board()

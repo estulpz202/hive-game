@@ -23,7 +23,7 @@ def test_ant_behavior_can_move_around_hive(board, players):
     center = Position(0, 0)
     east = Position(1, 0)
     west = Position(-1, 0)
-    
+
     sw = Position(-1, 1)
     nw = Position(0, -1)
     se = Position(0, 1)
@@ -32,7 +32,7 @@ def test_ant_behavior_can_move_around_hive(board, players):
     right_e = Position(2, 0)
     right_se = Position(1, 1)
     right_ne = Position(2, -1)
-    
+
     # Not included, disconnects destination
     # left_w = (-2, 0), left_sw = (-2, 1), left_nw = (-1, -1)
 

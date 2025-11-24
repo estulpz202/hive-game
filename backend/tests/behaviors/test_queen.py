@@ -63,7 +63,7 @@ def test_queen_FOM(board, players):
     blocker1 = Bug(BugType.QUEEN_BEE, black)
     assert board.place_bug(queen, center)
     assert board.place_bug(blocker1, northeast)
-    
+
     assert east in behavior.get_valid_moves(queen, board) # Only one blocker
 
     # queen_nw (w) - blocker1 (b)
